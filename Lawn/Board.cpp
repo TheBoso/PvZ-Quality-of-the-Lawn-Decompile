@@ -3477,14 +3477,15 @@ void Board::MouseDownWithPlant(int x, int y, int theClickCount)
 		mApp->PlayFoley(FoleyType::FOLEY_DROP);
 		return;
 	}
-
-	if (mApp->IsIZombieLevel())
-	{
-		mChallenge->IZombieMouseDownWithZombie(x, y, theClickCount);
-		return;
-	}
-
 	SeedType aPlantingSeedType = GetSeedTypeInCursor();
+
+		if(aPlantingSeedType <= SeedType::SEED_ZOMBIE_TALLNUT_HEAD && aPlantingSeedType >= SEED_ZOMBIE_NORMAL)
+		{
+			mChallenge->IZombieMouseDownWithZombie(x, y, theClickCount);
+			return;
+		}
+
+
 	int aGridX = PlantingPixelToGridX(x, y, aPlantingSeedType);
 	int aGridY = PlantingPixelToGridY(x, y, aPlantingSeedType);
 
