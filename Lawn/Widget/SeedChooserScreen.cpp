@@ -132,24 +132,18 @@ SeedChooserScreen::SeedChooserScreen()
 
 	DBG_ASSERT(mApp->GetSeedsAvailable() < NUM_SEED_TYPES);
 	memset(mChosenSeeds, 0, sizeof(mChosenSeeds));
-	for (SeedType aSeedType = SEED_PEASHOOTER; aSeedType < NUM_SEEDS_IN_CHOOSER; aSeedType = (SeedType)(aSeedType + 1))
+	//  Setup Sun generators first
+	SetupSeed(SeedType::SEED_SUNFLOWER);
+	SetupSeed(SeedType::SEED_TWINSUNFLOWER);
+	SetupSeed(SeedType::SEED_SUNSHROOM);
+
+	//  Now setup Zombie Packets
+
+	for (SeedType aSeedType = SEED_ZOMBIE_NORMAL; aSeedType < NUM_SEED_TYPES; aSeedType = (SeedType)(aSeedType + 1))
 	{
-		ChosenSeed& aChosenSeed = mChosenSeeds[aSeedType];
-		aChosenSeed.mSeedType = aSeedType;
-		GetSeedPositionInChooser(aSeedType, aChosenSeed.mX, aChosenSeed.mY);
-		aChosenSeed.mTimeStartMotion = 0;
-		aChosenSeed.mTimeEndMotion = 0;
-		aChosenSeed.mStartX = aChosenSeed.mX;
-		aChosenSeed.mStartY = aChosenSeed.mY;
-		aChosenSeed.mEndX = aChosenSeed.mX;
-		aChosenSeed.mEndY = aChosenSeed.mY;
-		aChosenSeed.mSeedState = SEED_IN_CHOOSER;
-		aChosenSeed.mSeedIndexInBank = 0;
-		aChosenSeed.mRefreshCounter = 0;
-		aChosenSeed.mRefreshing = false;
-		aChosenSeed.mImitaterType = SEED_NONE;
-		aChosenSeed.mCrazyDavePicked = false;
+		SetupSeed(aSeedType);
 	}
+	
 	if (mBoard->mCutScene->IsSurvivalRepick())
 	{
 		for (int anIdx = 0; anIdx < mBoard->mSeedBank->mNumPackets; anIdx++)
@@ -184,6 +178,27 @@ SeedChooserScreen::SeedChooserScreen()
 
 	mPreviousType = FindSeedInBank(mSeedsInBank - 1);
 }
+
+
+void SeedChooserScreen::SetupSeed(SeedType seed)
+{
+	ChosenSeed& aChosenSeed = mChosenSeeds[seed];
+	aChosenSeed.mSeedType = seed;
+	GetSeedPositionInChooser(seed, aChosenSeed.mX, aChosenSeed.mY);
+	aChosenSeed.mTimeStartMotion = 0;
+	aChosenSeed.mTimeEndMotion = 0;
+	aChosenSeed.mStartX = aChosenSeed.mX;
+	aChosenSeed.mStartY = aChosenSeed.mY;
+	aChosenSeed.mEndX = aChosenSeed.mX;
+	aChosenSeed.mEndY = aChosenSeed.mY;
+	aChosenSeed.mSeedState = SEED_IN_CHOOSER;
+	aChosenSeed.mSeedIndexInBank = 0;
+	aChosenSeed.mRefreshCounter = 0;
+	aChosenSeed.mRefreshing = false;
+	aChosenSeed.mImitaterType = SEED_NONE;
+	aChosenSeed.mCrazyDavePicked = false;
+}
+
 
 int SeedChooserScreen::PickFromWeightedArrayUsingSpecialRandSeed(TodWeightedArray* theArray, int theCount, MTRand& theLevelRNG)
 {

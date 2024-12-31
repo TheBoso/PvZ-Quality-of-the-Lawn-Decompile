@@ -134,6 +134,9 @@ public:
     virtual void			RemovedFromManager(WidgetManager* theWidgetManager);
     virtual void			AddedToManager(WidgetManager* theWidgetManager);
     void                    ResizeSlider();
+
+    //  NEW
+    void                    SetupSeed(SeedType seed);
 };
 
 #endif

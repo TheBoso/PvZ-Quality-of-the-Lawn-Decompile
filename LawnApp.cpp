@@ -2562,7 +2562,7 @@ int LawnApp::GetSeedsAvailable()
 	int aLevel = mPlayerInfo->mLevel;
 	if (HasFinishedAdventure() || aLevel > 50)
 	{
-		return 49;
+		return SEED_ZOMBIE_TALLNUT_HEAD;
 	}
 
 	SeedType aSeedTypeMax = GetAwardSeedForLevel(aLevel);
@@ -2571,7 +2571,7 @@ int LawnApp::GetSeedsAvailable()
 
 bool LawnApp::HasSeedType(SeedType theSeedType)
 {
-	if (IsTrialStageLocked() && theSeedType >= SeedType::SEED_JALAPENO)
+	if (IsTrialStageLocked() && theSeedType > SeedType::SEED_ZOMBIE_TALLNUT_HEAD)
 		return false;
 
 	/*  优化
