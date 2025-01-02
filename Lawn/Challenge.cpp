@@ -4700,23 +4700,7 @@ void Challenge::IZombieUpdate()
 bool Challenge::IsZombieSeedType(SeedType theSeedType)
 {
 	return 
-		theSeedType == SEED_ZOMBIQUARIUM_SNORKLE ||
-		theSeedType == SEED_ZOMBIQUARIUM_TROPHY ||
-		theSeedType == SEED_ZOMBIE_NORMAL ||
-		theSeedType == SEED_ZOMBIE_TRAFFIC_CONE ||
-		theSeedType == SEED_ZOMBIE_POLEVAULTER ||
-		theSeedType == SEED_ZOMBIE_PAIL ||
-		theSeedType == SEED_ZOMBIE_LADDER ||
-		theSeedType == SEED_ZOMBIE_DIGGER ||
-		theSeedType == SEED_ZOMBIE_BUNGEE ||
-		theSeedType == SEED_ZOMBIE_FOOTBALL ||
-		theSeedType == SEED_ZOMBIE_BALLOON ||
-		theSeedType == SEED_ZOMBIE_SCREEN_DOOR ||
-		theSeedType == SEED_ZOMBONI ||
-		theSeedType == SEED_ZOMBIE_POGO ||
-		theSeedType == SEED_ZOMBIE_DANCER ||
-		theSeedType == SEED_ZOMBIE_GARGANTUAR ||
-		theSeedType == SEED_ZOMBIE_IMP;
+		theSeedType >= SEED_ZOMBIE_NORMAL && theSeedType <= SEED_ZOMBIE_TALLNUT_HEAD;
 }
 
 void Challenge::IZombieSetPlantFilterEffect(Plant* thePlant, FilterEffect theFilterEffect)

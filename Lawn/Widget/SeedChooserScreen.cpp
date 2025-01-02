@@ -132,14 +132,16 @@ SeedChooserScreen::SeedChooserScreen()
 
 	DBG_ASSERT(mApp->GetSeedsAvailable() < NUM_SEED_TYPES);
 	memset(mChosenSeeds, 0, sizeof(mChosenSeeds));
+
+/*
 	//  Setup Sun generators first
 	SetupSeed(SeedType::SEED_SUNFLOWER);
 	SetupSeed(SeedType::SEED_TWINSUNFLOWER);
 	SetupSeed(SeedType::SEED_SUNSHROOM);
-
+*/
 	//  Now setup Zombie Packets
 
-	for (SeedType aSeedType = SEED_ZOMBIE_NORMAL; aSeedType < NUM_SEED_TYPES; aSeedType = (SeedType)(aSeedType + 1))
+	for (SeedType aSeedType = SEED_PEASHOOTER; aSeedType < NUM_SEED_TYPES; aSeedType = (SeedType)(aSeedType + 1))
 	{
 		SetupSeed(aSeedType);
 	}

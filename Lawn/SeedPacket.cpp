@@ -306,6 +306,15 @@ void DrawSeedPacket(Graphics* g, float x, float y, SeedType theSeedType, SeedTyp
 	bool aDrawSeedInMiddle = true;
 	float aOffsetX = 5.0f;
 	float aOffsetY = 8.0f;
+
+	
+	if(Challenge::IsZombieSeedType(aSeedType))
+	{
+		aScale = 0.35f;
+		aOffsetX = -3.0f;
+		aOffsetY = -7.0f;
+	}
+	
 	switch (aSeedType)
 	{
 	case SeedType::SEED_TALLNUT:
@@ -486,6 +495,12 @@ void DrawSeedPacket(Graphics* g, float x, float y, SeedType theSeedType, SeedTyp
 		break;
 
 	case SeedType::SEED_ZOMBIE_GARGANTUAR:
+		aScale = 0.23f;
+		aOffsetX = 4.0f;
+		aOffsetY = 3.0f;
+		break;
+
+	case SeedType::SEED_ZOMBIE_REDEYE_GARGANTUAR:
 		aScale = 0.23f;
 		aOffsetX = 4.0f;
 		aOffsetY = 3.0f;

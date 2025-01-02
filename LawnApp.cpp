@@ -162,7 +162,7 @@ LawnApp::LawnApp()
 	mBigArrowCursor = LoadCursor(GetModuleHandle(nullptr), MAKEINTRESOURCE(IDC_CURSOR1));
 	mDRM = nullptr;
 	mPlayedQuickplay = false;
-	StartDiscord();
+	//StartDiscord();
 }
 
 LawnApp::~LawnApp()

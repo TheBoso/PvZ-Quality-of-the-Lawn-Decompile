@@ -20,6 +20,7 @@
 #include "../Sexy.TodLib/TodParticle.h"
 #include "../Sexy.TodLib/EffectSystem.h"
 #include "../Sexy.TodLib/TodStringFile.h"
+#include "../SexyAppFramework/bass.h"
 
 PlantDefinition gPlantDefs[SeedType::NUM_SEED_TYPES] = {  
     { SeedType::SEED_PEASHOOTER,        nullptr, ReanimationType::REANIM_PEASHOOTER,    0,  100,    750,    PlantSubClass::SUBCLASS_SHOOTER,    150,    _S("PEASHOOTER") },
