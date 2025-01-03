@@ -2574,6 +2574,12 @@ bool LawnApp::HasSeedType(SeedType theSeedType)
 	if (IsTrialStageLocked() && theSeedType >= SeedType::SEED_JALAPENO)
 		return false;
 
+	if (gLawnApp->mGameMode == GameMode::GAMEMODE_PUZZLE_I_ZOMBIE_CUSTOM && Challenge::IsZombieSeedType(theSeedType)
+|| theSeedType < GetSeedsAvailable())
+	{
+		return true;
+	}
+
 	/*  优化
 	if (theSeedType >= SeedType::SEED_TWINSUNFLOWER && theSeedType <= SeedType::SEED_IMITATER)
 		return mPlayerInfo->mPurchases[theSeedType - SeedType::SEED_GATLINGPEA];

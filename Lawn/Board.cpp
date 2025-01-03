@@ -1610,6 +1610,11 @@ bool Board::ChooseSeedsOnCurrentLevel()
 		mApp->mGameMode == GameMode::GAMEMODE_CHALLENGE_ZOMBIQUARIUM)
 		return false;
 
+	if (mApp->mGameMode == GAMEMODE_PUZZLE_I_ZOMBIE_CUSTOM)
+	{
+		return true;
+	}
+
 	if (mApp->IsIZombieLevel() || mApp->IsSlotMachineLevel())
 		return false;
 

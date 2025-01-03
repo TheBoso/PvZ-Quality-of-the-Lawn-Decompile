@@ -260,6 +260,11 @@ int ChallengeScreen::MoreTrophiesNeeded(int theChallengeIndex)
 	{
 		return aDef.mChallengeMode == GAMEMODE_CHALLENGE_FINAL_BOSS ? 1 : 0;
 	}
+
+	if (aDef.mChallengeMode == GAMEMODE_PUZZLE_I_ZOMBIE_CUSTOM)
+	{
+		return 0;
+	}
 	
 	if (mApp->IsTrialStageLocked())
 	{

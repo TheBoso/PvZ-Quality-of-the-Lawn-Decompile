@@ -4934,14 +4934,18 @@ void Plant::Die()
 
 PlantDefinition& GetPlantDefinition(SeedType theSeedType)
 {
-    TOD_ASSERT(gPlantDefs[theSeedType].mSeedType == theSeedType);
-    TOD_ASSERT(theSeedType >= 0 && theSeedType < (int)SeedType::NUM_SEED_TYPES);
+   TOD_ASSERT(gPlantDefs[theSeedType].mSeedType == theSeedType);
+   TOD_ASSERT(theSeedType >= 0 && theSeedType < (int)SeedType::NUM_SEED_TYPES);
     
     return gPlantDefs[theSeedType];
 }
 
 int Plant::GetCost(SeedType theSeedType, SeedType theImitaterType)
 {
+    if (gLawnApp->mGameMode == GAMEMODE_PUZZLE_I_ZOMBIE_CUSTOM)
+    {
+        return 0;
+    }
     if (gLawnApp->mGameMode == GameMode::GAMEMODE_CHALLENGE_BEGHOULED || gLawnApp->mGameMode == GameMode::GAMEMODE_CHALLENGE_BEGHOULED_TWIST)
     {
         if (theSeedType == SeedType::SEED_REPEATER)
@@ -5030,6 +5034,11 @@ SexyString Plant::GetToolTip(SeedType theSeedType)
 int Plant::GetRefreshTime(SeedType theSeedType, SeedType theImitaterType)
 {
     if (Challenge::IsZombieSeedType(theSeedType))
+    {
+        return 0;
+    }
+
+    if (gLawnApp->mGameMode == GAMEMODE_PUZZLE_I_ZOMBIE_CUSTOM)
     {
         return 0;
     }
