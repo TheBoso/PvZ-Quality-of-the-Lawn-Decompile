@@ -829,8 +829,11 @@ void SeedPacket::MouseDown(int x, int y, int theClickCount)
 
 		if (HandleActivateableSeedPacket(mPacketType))
 		{
-			Deactivate();
-			return;
+			if (mBoard->TakeSunMoney(mBoard->GetCurrentPlantCost(mPacketType, this->mImitaterType)))
+			{
+				mBoard->mSeedBank->mSeedPackets[mIndex].WasPlanted();
+				return;
+			}
 		}
 		
 		mBoard->mCursorObject->mType = mPacketType;
