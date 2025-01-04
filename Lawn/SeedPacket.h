@@ -40,6 +40,8 @@ public:
     void                FlashIfReady();
     bool                CanPickUp();
     void                SetPacketType(SeedType theSeedType, SeedType theImitaterType = SeedType::SEED_NONE);
+    bool                HandleActivateableSeedPacket(SeedType theSeedPacket);
+
 };
 
 class SeedBank : public GameObject
@@ -64,10 +66,10 @@ public:
     void			    UpdateConveyorBelt();
     void			    UpdateWidth();
     void			    RefreshAllPackets();
+
 };
 
 void				    SeedPacketDrawSeed(Graphics* g, float x, float y, SeedType theSeedType, SeedType theImitaterType, float theOffsetX, float theOffsetY, float theScale);
 void				    DrawSeedPacket(Graphics* g, float x, float y, SeedType theSeedType, SeedType theImitaterType, float thePercentDark, int theGrayness, bool theDrawCost, bool theUseCurrentCost);
-
 
 #endif

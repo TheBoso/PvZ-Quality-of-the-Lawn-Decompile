@@ -161,7 +161,8 @@ public:
     int                             mFireballRow;                               
     bool                            mIsFireBall;                                
     ReanimationID                   mMoweredReanimID;                           
-    int                             mLastPortalX;                               
+    int                             mLastPortalX;
+    bool                            mShowColorForMindControl;
 
 public:
     Zombie();

@@ -592,6 +592,8 @@ void DrawSeedPacket(Graphics* g, float x, float y, SeedType theSeedType, SeedTyp
 	g->SetColorizeImages(false);
 }
 
+
+
 void SeedPacket::Draw(Graphics* g)
 {
 	float aPercentDark = 0.0f;
@@ -823,6 +825,14 @@ void SeedPacket::MouseDown(int x, int y, int theClickCount)
 	}
 	else
 	{
+		
+
+		if (HandleActivateableSeedPacket(mPacketType))
+		{
+			Deactivate();
+			return;
+		}
+		
 		mBoard->mCursorObject->mType = mPacketType;
 		mBoard->mCursorObject->mImitaterType = mImitaterType;
 		mBoard->mCursorObject->mCursorType = CursorType::CURSOR_TYPE_PLANT_FROM_BANK;
@@ -862,6 +872,20 @@ void SeedPacket::MouseDown(int x, int y, int theClickCount)
 
 		Deactivate();
 	}
+}
+
+bool SeedPacket::HandleActivateableSeedPacket(SeedType theSeedPacket)
+{
+	//  If our packet is activateable, then do what needs to be done and deactivate
+	if (theSeedPacket == SEED_ZOMBIE_BUNGEE && mApp->IsIZombieLevel() == false)
+	{
+		//  Bungees will spawn in mind controlled reinforcements
+		mBoard->SpawnZombiesFromSky(true);
+		return true;
+	}
+
+
+	return false;
 }
 
 void SeedPacket::WasPlanted()
@@ -1139,6 +1163,8 @@ void SeedPacket::SetPacketType(SeedType theSeedType, SeedType theImitaterType)
 	}
 }
 
+
+
 void SeedBank::UpdateConveyorBelt()
 {
 	mConveyorBeltCounter++;
@@ -1186,3 +1212,5 @@ void SeedBank::RefreshAllPackets()
 		}
 	}
 }
+
+

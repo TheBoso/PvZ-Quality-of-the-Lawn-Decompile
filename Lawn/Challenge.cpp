@@ -4268,23 +4268,24 @@ ZombieType Challenge::IZombieSeedTypeToZombieType(SeedType theSeedType)
 
 void Challenge::IZombiePlaceZombie(ZombieType theZombieType, int theGridX, int theGridY)
 {
-	Zombie* aZombie = mBoard->AddZombieInRow(theZombieType, theGridY, 0);
 	if (theZombieType == ZOMBIE_BUNGEE)
 	{
+	Zombie* aZombie = mBoard->AddZombie(theZombieType, false);
+	
 		aZombie->mTargetCol = theGridX;
 		aZombie->SetRow(theGridY);
 		aZombie->mPosX = mBoard->GridToPixelX(theGridX, theGridY);
 		aZombie->mPosY = aZombie->GetPosYBasedOnRow(theGridY);
 		aZombie->mRenderOrder = Board::MakeRenderOrder(RENDER_LAYER_GRAVE_STONE, theGridY, 7);
-
-
+		
 	}
 	else
 	{
-		aZombie->mPosX = mBoard->GridToPixelX(theGridX, theGridY) - 30.0f;
 		if(this->mApp->IsIZombieLevel() == false)
 		{
-			aZombie->StartMindControlled();
+			
+			mBoard->AddZombieInRow(theZombieType, theGridY,false, true
+				);
 		}
 	}
 }
