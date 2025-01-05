@@ -4991,8 +4991,20 @@ int Plant::GetCost(SeedType theSeedType, SeedType theImitaterType)
     case SeedType::SEED_ZOMBIE_GARGANTUAR:          return 300;
     case SeedType::SEED_ZOMBIE_REDEYE_GARGANTUAR:   return 500;
     case SeedType::SEED_ZOMBIE_IMP:                 return 25;
-    case SeedType::SEED_ZOMBIE_FLAG:               return 50;
-    case SeedType::SEED_ZOMBIE_NEWSPAPER:          return 125;
+    case SeedType::SEED_ZOMBIE_FLAG:
+        {
+            
+        int cost = 50;
+        for (SeedPacket packet : gLawnApp->mBoard->mSeedBank->mSeedPackets)
+        {
+            if (packet.mPacketType == SEED_ZOMBIE_FLAG || packet.mPacketType == SEED_NONE || Challenge::IsZombieSeedType(packet.mPacketType) == false) continue;
+            cost += Plant::GetCost(packet.mPacketType, packet.mImitaterType);
+        }
+
+        return cost;
+        }
+
+            case SeedType::SEED_ZOMBIE_NEWSPAPER:          return 125;
     case SeedType::SEED_ZOMBIE_BACKUP_DANCER:      return 100;
     case SeedType::SEED_ZOMBIE_DUCKY_TUBE:         return 75;
     case SeedType::SEED_ZOMBIE_SNORKEL:            return 150;
@@ -5001,7 +5013,7 @@ int Plant::GetCost(SeedType theSeedType, SeedType theImitaterType)
     case SeedType::SEED_ZOMBIE_JACK_IN_THE_BOX:    return 200;
     case SeedType::SEED_ZOMBIE_YETI:               return 450;
     case SeedType::SEED_ZOMBIE_CATAPULT:           return 300;
-    case SeedType::SEED_ZOMBIE_BOSS:               return 1000;
+    case SeedType::SEED_ZOMBIE_BOSS:               return 0;
     case SeedType::SEED_ZOMBIE_PEA_HEAD:           return 75;
     case SeedType::SEED_ZOMBIE_WALLNUT_HEAD:       return 100;
     case SeedType::SEED_ZOMBIE_JALAPENO_HEAD:      return 125;

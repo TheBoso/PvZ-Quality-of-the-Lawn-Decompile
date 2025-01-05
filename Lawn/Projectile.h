@@ -50,7 +50,8 @@ public:
     float                   mCobTargetX;            
     int                     mCobTargetRow;          
     ZombieID                mTargetZombieID;        
-    int                     mLastPortalX;           
+    int                     mLastPortalX;
+    int                     mOwnerTeamID; // 0 = plants 1 = zombies
 
 public:
     Projectile();

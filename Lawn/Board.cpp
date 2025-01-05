@@ -2600,10 +2600,9 @@ Zombie* Board::AddZombieInRow(ZombieType theZombieType, int theRow, int theFromW
 	bool aVariant = !Rand(5);
 	Zombie* aZombie = mZombies.DataArrayAlloc();
 
-	aZombie->ZombieInitialize(theRow, theZombieType, aVariant, nullptr, theFromWave);
+	aZombie->ZombieInitialize(theRow, theZombieType, aVariant, nullptr, theFromWave, friendlyZombie);
 	if (friendlyZombie)
 	{
-		aZombie->StartMindControlled();
 		aZombie->mPosX = -50;
 	}
 	if (theZombieType == ZombieType::ZOMBIE_BOBSLED && aZombie->IsOnBoard())
@@ -2611,10 +2610,9 @@ Zombie* Board::AddZombieInRow(ZombieType theZombieType, int theRow, int theFromW
 		
 		for (int _i = 0; _i < 3; _i++)
 		{
-			mZombies.DataArrayAlloc()->ZombieInitialize(theRow, ZombieType::ZOMBIE_BOBSLED, false, aZombie, theFromWave);
+			mZombies.DataArrayAlloc()->ZombieInitialize(theRow, ZombieType::ZOMBIE_BOBSLED, false, aZombie, theFromWave, friendlyZombie);
 			if (friendlyZombie)
 			{
-				aZombie->StartMindControlled();
 				aZombie->mPosX = -50;
 			}
 		}

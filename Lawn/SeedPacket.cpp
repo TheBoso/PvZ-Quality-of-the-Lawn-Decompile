@@ -886,6 +886,50 @@ bool SeedPacket::HandleActivateableSeedPacket(SeedType theSeedPacket)
 		mBoard->SpawnZombiesFromSky(true);
 		return true;
 	}
+	else if (theSeedPacket == SEED_ZOMBIE_FLAG)
+	{
+		int midRow = MAX_GRID_SIZE_Y / 2;
+		mBoard->AddZombieInRow(ZOMBIE_FLAG, midRow, false, true);
+		for (int aRow = 0; aRow < MAX_GRID_SIZE_Y; aRow++)
+		{
+			mBoard->AddZombieInRow(ZOMBIE_NORMAL, aRow, false, true);
+			mBoard->AddZombieInRow(ZOMBIE_TRAFFIC_CONE, aRow, false, true);
+
+		}
+
+		//  Be nice and try spawn one of our random zomb seeds
+		vector<SeedPacket> zombieSeeds;
+		for (SeedPacket seed : mBoard->mSeedBank->mSeedPackets)
+		{
+			if (Challenge::IsZombieSeedType(seed.mPacketType)
+				&& seed.mPacketType != SEED_ZOMBIE_BUNGEE
+				&& seed.mPacketType != SEED_ZOMBIE_FLAG
+				&& seed.mPacketType != SEED_ZOMBIE_BOSS)
+			{
+				zombieSeeds.push_back(seed);
+			}
+		}
+
+		int size = zombieSeeds.size();
+		int index = Rand(size);
+		ZombieType zomb = Challenge::IZombieSeedTypeToZombieType(zombieSeeds[index].mPacketType);
+		for (int aRow = 0; aRow < MAX_GRID_SIZE_Y; aRow++)
+		{
+			mBoard->AddZombieInRow(zomb, aRow, false, true);
+
+		}
+
+		return true;
+
+	}
+	else if (theSeedPacket == SEED_ZOMBIE_BOSS)
+	{
+
+		mBoard->AddZombieInRow(ZombieType::ZOMBIE_BOSS, 0, 0, true);
+		Deactivate();
+		return true;
+
+	}
 
 
 	return false;
