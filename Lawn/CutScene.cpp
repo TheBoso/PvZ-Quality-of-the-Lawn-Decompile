@@ -662,6 +662,7 @@ void CutScene::StartLevelIntro()
 	mBoard->mSeedBank->Move(SEED_BANK_OFFSET_X, -IMAGE_SEEDBANK->GetHeight());
 	mBoard->mMenuButton->mBtnNoDraw = true;
 	mBoard->mFastButton->mBtnNoDraw = true;
+	mBoard->mSeedSelectButton->mBtnNoDraw = true;
 	mApp->mSeedChooserScreen->mMouseVisible = false;
 	mApp->mSeedChooserScreen->Move(0, SEED_CHOOSER_OFFSET_Y);
 	mApp->mSeedChooserScreen->mMenuButton->mBtnNoDraw = true;
@@ -1404,6 +1405,7 @@ void CutScene::Update()
 		if (mBoard->mFastButton && mApp->mGameMode != GAMEMODE_CHALLENGE_ZEN_GARDEN && mApp->mGameMode != GAMEMODE_TREE_OF_WISDOM)
 		{
 			mBoard->mFastButton->mBtnNoDraw = false;
+			mBoard->mSeedSelectButton->mBtnNoDraw = false;
 		}
 		return;
 	}

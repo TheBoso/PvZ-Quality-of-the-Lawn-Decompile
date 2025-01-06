@@ -237,7 +237,8 @@ void WidgetContainer::InsertWidgetHelper(const WidgetList::iterator &where, Widg
 	mWidgets.push_front(theWidget);
 }
 
-void WidgetContainer::BringToFront(Widget* theWidget)
+void WidgetContainer::
+BringToFront(Widget* theWidget)
 {
 	WidgetList::iterator anItr = std::find(mWidgets.begin(), mWidgets.end(), theWidget);
 	if (anItr != mWidgets.end())

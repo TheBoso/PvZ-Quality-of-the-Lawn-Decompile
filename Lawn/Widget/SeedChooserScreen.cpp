@@ -336,7 +336,10 @@ void SeedChooserScreen::Draw(Graphics* g)
 		return;
 
 	g->SetLinearBlend(true);
-	if (!mBoard->ChooseSeedsOnCurrentLevel() || (mBoard->mCutScene && mBoard->mCutScene->IsBeforePreloading()))
+
+	//  TODO: Have some sort of conditional check here so that we still allow to choose seeds on any level.
+	//  !mBoard->ChooseSeedsOnCurrentLevel() || - put this back later
+	if ( (mBoard->mCutScene && mBoard->mCutScene->IsBeforePreloading()))
 		return;
 
 	g->DrawImage(Sexy::IMAGE_SEEDCHOOSER_BACKGROUND, 0, 87);
@@ -946,7 +949,7 @@ void SeedChooserScreen::ClickedSeedInChooser(ChosenSeed& theChosenSeed)
 
 	RemoveToolTip();
 	mApp->PlaySample(Sexy::SOUND_TAP);
-	if (mSeedsInBank == mBoard->mSeedBank->mNumPackets)
+	if (mSeedsInBank == mBoard->mSeedBank->mNumPackets || mApp->mGameScene != SCENE_LEVEL_INTRO)
 		EnableStartButton(true);
 }
 
@@ -1229,7 +1232,14 @@ void SeedChooserScreen::CloseSeedChooser()
 			aSeedPacket.mActive = false;
 		}
 	}
-	mBoard->mCutScene->EndSeedChooser();
+	if (mApp->mGameScene != SCENE_LEVEL_INTRO)
+	{
+		mApp->KillSeedChooserScreen();
+	}
+	else
+	{
+		mBoard->mCutScene->EndSeedChooser();
+	}
 }
 
 void SeedChooserScreen::KeyDown(KeyCode theKey)
@@ -1261,7 +1271,7 @@ void SeedChooserScreen::UpdateAfterPurchase()
 		aChosenSeed.mEndX = aChosenSeed.mX;
 		aChosenSeed.mEndY = aChosenSeed.mY;
 	}
-	EnableStartButton(mSeedsInBank == mBoard->mSeedBank->mNumPackets);
+	EnableStartButton(mSeedsInBank == mBoard->mSeedBank->mNumPackets );
 	ResizeSlider();
 }
 

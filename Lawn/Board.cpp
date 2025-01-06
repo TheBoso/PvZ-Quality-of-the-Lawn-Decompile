@@ -162,6 +162,13 @@ Board::Board(LawnApp* theApp)
 	mMenuButton->mDrawStoneButton = true;
 	mFastButton = new GameButton(2);
 	mFastButton->Resize(740, 30, IMAGE_FASTBUTTON->mWidth, 46);
+
+	mSeedSelectButton = new GameButton(3);
+	mSeedSelectButton->Resize(600, 30, 100, 46);
+	mSeedSelectButton->mDrawStoneButton = true;
+	mSeedSelectButton->SetLabel("Seeds");
+	//mSeedSelectButton->mButtonImage = IMAGE_SEEDCHOOSER_BUTTON;
+	
 	mStoreButton = nullptr;
 	mIgnoreMouseUp = false;
 	mPeashootersUsed = false;
@@ -190,6 +197,7 @@ Board::Board(LawnApp* theApp)
 		mMenuButton->SetLabel(_S("[MENU_BUTTON]"));
 		mMenuButton->Resize(681, -10, 117, 46);
 		mFastButton->mBtnNoDraw = false;
+		mSeedSelectButton->mBtnNoDraw = false;
 	}
 
 	if (mApp->mGameMode == GameMode::GAMEMODE_CHALLENGE_LAST_STAND)
@@ -230,6 +238,11 @@ Board::~Board()
 	{
 		delete mFastButton;
 	}
+	if (mSeedSelectButton)
+	{
+		delete mSeedSelectButton;
+	}
+		
 	mZombies.DataArrayDispose();
 	mPlants.DataArrayDispose();
 	mProjectiles.DataArrayDispose();
@@ -364,7 +377,10 @@ bool Board::LoadGame(const string& theFileName)
 	ResetFPSStats();
 	UpdateLayers();		
 	if (mApp->mGameScene == GameScenes::SCENE_PLAYING)
+	{
 		mFastButton->mBtnNoDraw = false;
+		mSeedSelectButton->mBtnNoDraw = false;	
+	}
 	return true;
 }
 
@@ -4501,6 +4517,51 @@ void Board::MouseUp(int x, int y, int theClickCount)
 			UpdateCursor();
 			mApp->isFastMode = !mApp->isFastMode;
 		}
+
+		else if (mSeedSelectButton->IsMouseOver())
+		{
+			if (mApp->mSeedChooserScreen != nullptr)
+			{
+				mApp->KillSeedChooserScreen();
+				return;
+			}
+			//  Cutscenes rely on this being level intro. otherwise seed chooser wont show
+		//	mApp->mGameScene = GameScenes::SCENE_LEVEL_INTRO;
+			mApp->ShowSeedChooserScreen();
+			mCutScene->mCutsceneTime = 0;
+			mCutScene->StartSeedChooser();
+			SeedChooserScreen* screen = mApp->mSeedChooserScreen;
+			screen->mMenuButton->mBtnNoDraw = false;
+
+
+			//  We want to put already assigned seeds back in so we can deselect if needed.
+			int packets = mSeedBank->mNumPackets;
+			for (int i = 0; i < packets; i++)
+			{
+				if (mSeedBank->mSeedPackets[i].mPacketType != SEED_NONE)
+				{
+					ChosenSeed& aChosenSeed = screen->mChosenSeeds[mSeedBank->mSeedPackets[i].mIndex];
+					aChosenSeed.mStartX = aChosenSeed.mX;
+					aChosenSeed.mStartY = aChosenSeed.mY;
+					screen->GetSeedPositionInBank(i, aChosenSeed.mEndX, aChosenSeed.mEndY);
+					
+
+				}
+			}
+			
+			
+			screen->mParent->BringToFront(mApp->mSeedChooserScreen);
+
+			//mCutScene->StartLevelIntro();
+			
+			//mCutScene->StartSeedChooser();
+
+			/*
+			screen->Move(0, mCutScene->CalcPosition(4000, 4250, SEED_CHOOSER_OFFSET_Y, 0));
+			screen->mMenuButton->mY = mCutScene->CalcPosition(0, 1, -50, -10);
+			screen->mMenuButton->mBtnNoDraw = false;
+*/
+		}
 		else if(mStoreButton && mStoreButton->IsMouseOver())
 		{
 			if (mApp->mGameMode == GameMode::GAMEMODE_CHALLENGE_ZEN_GARDEN)
@@ -5645,6 +5706,10 @@ void Board::Update()
 	}
 	if (HAS_FAST_FOWARD_BUTTON)
 		mFastButton->Update();
+
+	mSeedSelectButton->mDisabled = aDisabled;
+	mSeedSelectButton->Update();
+	
 	if (mStoreButton)
 	{
 		mStoreButton->mDisabled = aDisabled;
@@ -7410,6 +7475,8 @@ void Board::DrawUITop(Graphics* g)
 	mMenuButton->Draw(g);
 	if (HAS_FAST_FOWARD_BUTTON)
 		mFastButton->Draw(g);
+
+	mSeedSelectButton->Draw(g);
 
 	if (mTimeStopCounter > 0)
 	{
