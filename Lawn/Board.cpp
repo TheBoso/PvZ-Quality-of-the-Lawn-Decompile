@@ -3478,7 +3478,7 @@ void Board::MouseDownWithPlant(int x, int y, int theClickCount)
 		return;
 	}
 
-	if (mApp->IsIZombieLevel())
+	if (Challenge::IsZombieSeedType(GetSeedTypeInCursor()) && mApp->mGameMode != GAMEMODE_CHALLENGE_ZOMBIQUARIUM)
 	{
 		mChallenge->IZombieMouseDownWithZombie(x, y, theClickCount);
 		return;
