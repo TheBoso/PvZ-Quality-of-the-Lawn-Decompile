@@ -5029,6 +5029,12 @@ SexyString Plant::GetToolTip(SeedType theSeedType)
 
 int Plant::GetRefreshTime(SeedType theSeedType, SeedType theImitaterType)
 {
+
+    if (theSeedType == SEED_NONE)
+    {
+        return 0;
+    }
+    
     if (Challenge::IsZombieSeedType(theSeedType))
     {
         return 0;

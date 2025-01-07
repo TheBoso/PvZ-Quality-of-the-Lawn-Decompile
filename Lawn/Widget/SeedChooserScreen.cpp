@@ -879,6 +879,11 @@ SeedType SeedChooserScreen::FindSeedInBank(int theIndexInBank)
 
 void SeedChooserScreen::EnableStartButton(bool theEnabled)
 {
+	if (mStartButton == nullptr)
+	{
+	return;
+	}
+	
 	mStartButton->SetDisabled(!theEnabled);
 	if (theEnabled) mStartButton->mColors[GameButton::COLOR_LABEL] = Color::White;
 	else mStartButton->mColors[GameButton::COLOR_LABEL] = Color(64, 64, 64);

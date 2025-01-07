@@ -4538,16 +4538,17 @@ void Board::MouseUp(int x, int y, int theClickCount)
 			int packets = mSeedBank->mNumPackets;
 			for (int i = 0; i < packets; i++)
 			{
-				if (mSeedBank->mSeedPackets[i].mPacketType != SEED_NONE)
-				{
-					ChosenSeed& aChosenSeed = screen->mChosenSeeds[mSeedBank->mSeedPackets[i].mIndex];
-					aChosenSeed.mStartX = aChosenSeed.mX;
-					aChosenSeed.mStartY = aChosenSeed.mY;
-					screen->GetSeedPositionInBank(i, aChosenSeed.mEndX, aChosenSeed.mEndY);
-					
+				SeedType seedType = mSeedBank->mSeedPackets[i].mPacketType;
 
-				}
+				//  First we set our chosen seeds to none seeds
+				auto none = screen->mChosenSeeds[SEED_NONE];
+				ChosenSeed& aChosenSeed = screen->mChosenSeeds[seedType];
+
+				screen->ClickedSeedInChooser(aChosenSeed);
 			}
+
+
+		
 			
 			
 			screen->mParent->BringToFront(mApp->mSeedChooserScreen);

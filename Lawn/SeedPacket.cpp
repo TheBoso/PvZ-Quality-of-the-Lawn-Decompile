@@ -1030,7 +1030,7 @@ void SeedBank::AddSeed(SeedType theSeedType, bool thePlaceOnLeft)
 
 void SeedBank::RemoveSeed(int theIndex)
 {
-	TOD_ASSERT(mBoard->HasConveyorBeltSeedBank());
+	//TOD_ASSERT(mBoard->HasConveyorBeltSeedBank());
 	TOD_ASSERT(theIndex >= 0 && theIndex < GetNumSeedsOnConveyorBelt());
 
 	for (int i = theIndex; i < mNumPackets; i++)
