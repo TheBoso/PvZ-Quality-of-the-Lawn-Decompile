@@ -134,9 +134,9 @@ SeedChooserScreen::SeedChooserScreen()
 
 	DBG_ASSERT(mApp->GetSeedsAvailable() < NUM_SEED_TYPES);
 	memset(mChosenSeeds, 0, sizeof(mChosenSeeds));
-	SeedType startingSeedZombies = SEED_ZOMBIE_NORMAL;
-	SeedType startingSeedRegular = SEED_PEASHOOTER;
-	for (SeedType aSeedType = ZOMBIES_ONLY ? startingSeedZombies : startingSeedRegular ; aSeedType < ZOMBIES_ONLY == false ? NUM_SEEDS_IN_CHOOSER : ZOMBIES_END; aSeedType = (SeedType)(aSeedType + 1))
+	SeedType startingSeed = ZOMBIES_ONLY ? SEED_ZOMBIE_NORMAL : SEED_PEASHOOTER;
+	SeedType endSeed = ZOMBIES_ONLY ? ZOMBIES_END : NUM_SEEDS_IN_CHOOSER;
+	for (SeedType aSeedType = startingSeed; aSeedType < endSeed; aSeedType = (SeedType)(aSeedType + 1))
 	{
 		ChosenSeed& aChosenSeed = mChosenSeeds[aSeedType];
 		aChosenSeed.mSeedType = aSeedType;
@@ -351,7 +351,11 @@ void SeedChooserScreen::Draw(Graphics* g)
 	}
 	TodDrawString(g, _S("[CHOOSE_YOUR_PLANTS]"), 229, 110, Sexy::FONT_DWARVENTODCRAFT18YELLOW, Color::White, DS_ALIGN_CENTER);
 	mSlider->SliderDraw(g);
-	for (SeedType aSeedType = SEED_PEASHOOTER; aSeedType < NUM_SEEDS_IN_CHOOSER; aSeedType = (SeedType)(aSeedType + 1))
+
+	SeedType startingSeed = ZOMBIES_ONLY ? SEED_ZOMBIE_NORMAL : SEED_PEASHOOTER;
+	SeedType endingSeed = ZOMBIES_ONLY ? ZOMBIES_END : NUM_SEEDS_IN_CHOOSER;
+	
+	for (SeedType aSeedType = startingSeed; aSeedType < endingSeed; aSeedType = (SeedType)(aSeedType + 1))
 	{
 		if (aSeedType != SEED_IMITATER)
 			g->SetClipRect(cSeedClipRect);
@@ -410,7 +414,7 @@ void SeedChooserScreen::Draw(Graphics* g)
 	}
 
 	// Draw flying seeds
-	for (SeedType aSeedType = SEED_PEASHOOTER; aSeedType < NUM_SEEDS_IN_CHOOSER; aSeedType = (SeedType)(aSeedType + 1))
+	for (SeedType aSeedType = startingSeed; aSeedType < endingSeed; aSeedType = (SeedType)(aSeedType + 1))
 	{
 		ChosenSeed& aChosenSeed = mChosenSeeds[aSeedType];
 		ChosenSeedState aSeedState = aChosenSeed.mSeedState;

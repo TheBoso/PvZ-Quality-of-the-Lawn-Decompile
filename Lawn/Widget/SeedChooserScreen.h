@@ -65,7 +65,7 @@ public:
     GameButton*             mStoreButton;                       
     GameButton*             mAlmanacButton;                     
     GameButton*             mMenuButton;
-    ChosenSeed              mChosenSeeds[NUM_SEED_TYPES];
+    ChosenSeed              mChosenSeeds[ZOMBIES_END];
     LawnApp*                mApp;                               
     Board*                  mBoard;                             
     int                     mNumSeedsToChoose;                  
