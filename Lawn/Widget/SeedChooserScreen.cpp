@@ -871,7 +871,7 @@ Zombie* SeedChooserScreen::ZombieHitTest(int x, int y)
 
 SeedType SeedChooserScreen::FindSeedInBank(int theIndexInBank)
 {
-	for (SeedType aSeedType = SEED_PEASHOOTER; aSeedType < NUM_SEEDS_IN_CHOOSER; aSeedType = (SeedType)(aSeedType + 1))
+	for (SeedType aSeedType = SEED_PEASHOOTER; aSeedType < ZOMBIES_END; aSeedType = (SeedType)(aSeedType + 1))
 	{
 		if (mApp->SeedTypeAvailable(aSeedType))
 		{

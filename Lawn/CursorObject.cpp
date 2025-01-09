@@ -3,6 +3,8 @@
 #include "ZenGarden.h"
 #include "../LawnApp.h"
 #include "CursorObject.h"
+
+#include "Challenge.h"
 #include "../Resources.h"
 #include "../Sexy.TodLib/Reanimator.h"
 #include "../SexyAppFramework/WidgetManager.h"
@@ -182,7 +184,7 @@ void CursorObject::Draw(Graphics* g)
             aOffsetY += 30.0f;
         }
         aOffsetY -= 15.0f;
-        if (mApp->IsIZombieLevel())
+        if (mApp->IsIZombieLevel() || Challenge::IsZombieSeedType(mType))
         {
             aOffsetX -= 55.0f;
             aOffsetY -= 70.0f;

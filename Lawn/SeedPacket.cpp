@@ -286,12 +286,8 @@ void DrawSeedPacket(Graphics* g, float x, float y, SeedType theSeedType, SeedTyp
 		theSeedType == SeedType::SEED_SLOT_MACHINE_DIAMOND ? 6 :
 		theSeedType == SeedType::SEED_ZOMBIQUARIUM_SNORKLE ? 7 :
 		theSeedType == SeedType::SEED_ZOMBIQUARIUM_TROPHY ? 8 : 2;
-	if (theSeedType == SeedType::SEED_ZOMBIE_NORMAL || theSeedType == SeedType::SEED_ZOMBIE_TRAFFIC_CONE || theSeedType == SeedType::SEED_ZOMBIE_POLEVAULTER
-		|| theSeedType == SeedType::SEED_ZOMBIE_PAIL || theSeedType == SeedType::SEED_ZOMBIE_LADDER || theSeedType == SeedType::SEED_ZOMBIE_DIGGER
-		|| theSeedType == SeedType::SEED_ZOMBIE_BUNGEE || theSeedType == SeedType::SEED_ZOMBIE_FOOTBALL || theSeedType == SeedType::SEED_ZOMBIE_BALLOON
-		|| theSeedType == SeedType::SEED_ZOMBIE_SCREEN_DOOR || theSeedType == SeedType::SEED_ZOMBONI || theSeedType == SeedType::SEED_ZOMBIE_POGO
-		|| theSeedType == SeedType::SEED_ZOMBIE_DANCER || theSeedType == SeedType::SEED_ZOMBIE_GARGANTUAR || theSeedType == SeedType::SEED_ZOMBIE_IMP
-		)
+
+	if (Challenge::IsZombieSeedType(theSeedType))
 		aPacketBackground = 9;
 
 	if (g->mScaleX > 1)
@@ -307,6 +303,14 @@ void DrawSeedPacket(Graphics* g, float x, float y, SeedType theSeedType, SeedTyp
 	bool aDrawSeedInMiddle = true;
 	float aOffsetX = 5.0f;
 	float aOffsetY = 8.0f;
+
+	if(Challenge::IsZombieSeedType(aSeedType))
+	{
+		aScale = 0.35f;
+		aOffsetX = -3.0f;
+		aOffsetY = -7.0f;
+	}
+	
 	switch (aSeedType)
 	{
 	case SeedType::SEED_TALLNUT:
@@ -445,6 +449,12 @@ void DrawSeedPacket(Graphics* g, float x, float y, SeedType theSeedType, SeedTyp
 		aScale = 0.35f;
 		aOffsetX = -8.0f;
 		aOffsetY = -12.0f;
+		break;
+
+	case SeedType::SEED_ZOMBIE_REDEYE_GARGANTUAR:
+		aScale = 0.23f;
+		aOffsetX = 4.0f;
+		aOffsetY = 3.0f;
 		break;
 
 	case SeedType::SEED_ZOMBIE_LADDER:
