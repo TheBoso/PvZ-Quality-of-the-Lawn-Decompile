@@ -21,6 +21,8 @@
 #include "../../SexyAppFramework/WidgetManager.h"
 #include "../../SexyAppFramework/Slider.h"
 
+#define ZOMBIES_ONLY true
+
 const Rect cSeedClipRect = Rect(0, 123, BOARD_WIDTH, 420);
 const int seedPacketRows = 8;
 
@@ -132,7 +134,9 @@ SeedChooserScreen::SeedChooserScreen()
 
 	DBG_ASSERT(mApp->GetSeedsAvailable() < NUM_SEED_TYPES);
 	memset(mChosenSeeds, 0, sizeof(mChosenSeeds));
-	for (SeedType aSeedType = SEED_PEASHOOTER; aSeedType < NUM_SEEDS_IN_CHOOSER; aSeedType = (SeedType)(aSeedType + 1))
+	SeedType startingSeedZombies = SEED_ZOMBIE_NORMAL;
+	SeedType startingSeedRegular = SEED_PEASHOOTER;
+	for (SeedType aSeedType = ZOMBIES_ONLY ? startingSeedZombies : startingSeedRegular ; aSeedType < ZOMBIES_ONLY == false ? NUM_SEEDS_IN_CHOOSER : ZOMBIES_END; aSeedType = (SeedType)(aSeedType + 1))
 	{
 		ChosenSeed& aChosenSeed = mChosenSeeds[aSeedType];
 		aChosenSeed.mSeedType = aSeedType;
