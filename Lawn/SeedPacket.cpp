@@ -910,13 +910,15 @@ bool SeedPacket::HandleActivateableSeedPacket(SeedType theSeedPacket)
 			}
 		}
 
-		int size = zombieSeeds.size();
-		int index = Rand(size);
-		ZombieType zomb = Challenge::IZombieSeedTypeToZombieType(zombieSeeds[index].mPacketType);
+		for (SeedPacket packet : zombieSeeds)
+		{
+			
+		ZombieType zomb = Challenge::IZombieSeedTypeToZombieType(packet.mPacketType);
 		for (int aRow = 0; aRow < MAX_GRID_SIZE_Y; aRow++)
 		{
 			mBoard->AddZombieInRow(zomb, aRow, false, true);
 
+		}
 		}
 
 		return true;
