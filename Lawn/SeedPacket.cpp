@@ -883,7 +883,7 @@ bool SeedPacket::HandleActivateableSeedPacket(SeedType theSeedPacket)
 	if (theSeedPacket == SEED_ZOMBIE_BUNGEE && mApp->IsIZombieLevel() == false)
 	{
 		//  Bungees will spawn in mind controlled reinforcements
-		mBoard->SpawnZombiesFromSky(true);
+		mBoard->SpawnZombiesFromSky(false);
 		return true;
 	}
 	else if (theSeedPacket == SEED_ZOMBIE_FLAG)

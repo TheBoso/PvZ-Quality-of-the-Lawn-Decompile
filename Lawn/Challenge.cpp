@@ -4284,7 +4284,7 @@ void Challenge::IZombiePlaceZombie(ZombieType theZombieType, int theGridX, int t
 		if(this->mApp->IsIZombieLevel() == false)
 		{
 			
-			mBoard->AddZombieInRow(theZombieType, theGridY,false, true
+			mBoard->AddZombieInRow(theZombieType, theGridY,false, false
 				);
 		}
 	}
