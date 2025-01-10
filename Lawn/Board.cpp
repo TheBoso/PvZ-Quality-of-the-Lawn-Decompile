@@ -2629,9 +2629,9 @@ Zombie* Board::AddZombieInRow(ZombieType theZombieType, int theRow, int theFromW
 	return aZombie;
 }
 
-Zombie* Board::AddZombie(ZombieType theZombieType, int theFromWave, bool isFriendly)
+Zombie* Board::AddZombie(ZombieType theZombieType, int theFromWave)
 {
-	return AddZombieInRow(theZombieType, PickRowForNewZombie(theZombieType), theFromWave, isFriendly); 
+	return AddZombieInRow(theZombieType, PickRowForNewZombie(theZombieType), theFromWave); 
 }
 
 void Board::RemoveAllZombies()
@@ -4848,12 +4848,12 @@ void Board::SpawnZombieWave()
 			{
 				for (int i = 0; i < MAX_ZOMBIE_FOLLOWERS; i++)
 				{
-					AddZombie(ZombieType::ZOMBIE_NORMAL, mCurrentWave, mZombieCampaign);  
+					AddZombie(ZombieType::ZOMBIE_NORMAL, mCurrentWave);  
 				}
 			}
 			else
 			{
-				AddZombie(aZombieType, mCurrentWave, mZombieCampaign);
+				AddZombie(aZombieType, mCurrentWave);
 			}
 		}
 	}
