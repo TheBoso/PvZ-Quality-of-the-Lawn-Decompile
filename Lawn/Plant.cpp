@@ -2323,7 +2323,7 @@ void Plant::Squish()
         aLadder->GridItemDie();
     }
 
-    if (mApp->IsIZombieLevel())
+    if (mApp->IsIZombieLevel() || mBoard->mZombieCampaign)
     {
         mBoard->mChallenge->IZombiePlantDropRemainingSun(this);
     }

@@ -4831,7 +4831,7 @@ bool Challenge::IZombieEatBrain(Zombie* theZombie)
 
 void Challenge::IZombiePlantDropRemainingSun(Plant* thePlant)
 {
-	if (thePlant->mSeedType == SEED_SUNFLOWER)
+	if (thePlant->MakesSun())
 	{
 		int aSunCount = thePlant->mPlantHealth / 40 + 1;
 		for (int i = 0; i < aSunCount; i++)

@@ -1199,7 +1199,7 @@ void Zombie::BungeeLiftTarget()
         mBoard->NewPlant(mTargetCol, mRow, SeedType::SEED_LILYPAD, SeedType::SEED_NONE);
     }
 
-    if (mApp->IsIZombieLevel())
+    if (mApp->IsIZombieLevel() ||  mBoard->mZombieCampaign)
     {
         mBoard->mChallenge->IZombiePlantDropRemainingSun(aPlant);
     }

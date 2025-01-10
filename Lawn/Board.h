@@ -252,7 +252,7 @@ public:
 	ZombieType						PickGraveRisingZombieType(int theZombiePoints);
 	ZombieType						PickZombieType(int theZombiePoints, int theWaveIndex, ZombiePicker* theZombiePicker);
 	int								PickRowForNewZombie(ZombieType theZombieType);
-	/*inline*/ Zombie*				AddZombie(ZombieType theZombieType, int theFromWave);
+	/*inline*/ Zombie*				AddZombie(ZombieType theZombieType, int theFromWave, bool isFriendly = false);
 	void							SpawnZombieWave();
 	void							RemoveAllZombies();
 	void							RemoveCutsceneZombies();
