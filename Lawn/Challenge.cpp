@@ -2478,8 +2478,23 @@ void Challenge::InitZombieWavesFromList(ZombieType* theZombieList, int theListLe
 
 void Challenge::InitZombieWaves()
 {
+	
 	GameMode aGameMode = mApp->mGameMode;
 	bool* aList = mBoard->mZombieAllowed;
+
+
+	
+	if (mBoard->mZombieCampaign)
+	{
+		aList[ZOMBIE_PEA_HEAD] = true;
+		aList[ZOMBIE_WALLNUT_HEAD] = true;
+		aList[ZOMBIE_JALAPENO_HEAD] = true;
+		aList[ZOMBIE_GATLING_HEAD] = true;
+		aList[ZOMBIE_SQUASH_HEAD] = true;
+		aList[ZOMBIE_TALLNUT_HEAD] = true;
+		return;
+	}
+	
 	if (mApp->IsSurvivalMode())
 	{
 		if (mSurvivalStage == 0)

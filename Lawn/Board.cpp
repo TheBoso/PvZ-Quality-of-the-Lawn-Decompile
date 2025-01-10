@@ -1125,6 +1125,13 @@ void Board::PickBackground()
 
 void Board::InitZombieWavesForLevel(int theForLevel)
 {
+	//  Zombie campaign, spawn zombotany zombies on the house side
+	if (mZombieCampaign)
+	{
+		mChallenge->InitZombieWaves();
+		return;
+	}
+	
 	if (mApp->IsWhackAZombieLevel() || (mApp->IsWallnutBowlingLevel() && !mApp->IsFirstTimeAdventureMode()))
 	{
 		mChallenge->InitZombieWaves();
