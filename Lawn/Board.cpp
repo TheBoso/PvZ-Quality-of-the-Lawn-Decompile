@@ -210,6 +210,8 @@ Board::Board(LawnApp* theApp)
 		mStoreButton->mBtnNoDraw = true;
 		mStoreButton->SetLabel(_S("[GET_FULL_VERSION_BUTTON]"));
 	}
+
+	mZombieCampaign = true;
 }
 
 Board::~Board()

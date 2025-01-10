@@ -227,6 +227,7 @@ public:
 	bool							mCoinFaded;
 	int								mAchievementCoinCount;
 	int								mGargantuarsKilled;
+	bool							mZombieCampaign;
 
 public:
 	Board(LawnApp* theApp);
