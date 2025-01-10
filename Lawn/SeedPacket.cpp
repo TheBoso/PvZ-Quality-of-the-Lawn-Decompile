@@ -287,8 +287,11 @@ void DrawSeedPacket(Graphics* g, float x, float y, SeedType theSeedType, SeedTyp
 		theSeedType == SeedType::SEED_ZOMBIQUARIUM_SNORKLE ? 7 :
 		theSeedType == SeedType::SEED_ZOMBIQUARIUM_TROPHY ? 8 : 2;
 
-	if (Challenge::IsZombieSeedType(theSeedType))
+	
+	if (theSeedType >= SEED_ZOMBIE_NORMAL && theSeedType <= SEED_ZOMBIE_TALLNUT_HEAD)
+	{
 		aPacketBackground = 9;
+	}
 
 	if (g->mScaleX > 1)
 	{
@@ -304,6 +307,7 @@ void DrawSeedPacket(Graphics* g, float x, float y, SeedType theSeedType, SeedTyp
 	float aOffsetX = 5.0f;
 	float aOffsetY = 8.0f;
 
+	
 	if(Challenge::IsZombieSeedType(aSeedType))
 	{
 		aScale = 0.35f;
@@ -451,12 +455,6 @@ void DrawSeedPacket(Graphics* g, float x, float y, SeedType theSeedType, SeedTyp
 		aOffsetY = -12.0f;
 		break;
 
-	case SeedType::SEED_ZOMBIE_REDEYE_GARGANTUAR:
-		aScale = 0.23f;
-		aOffsetX = 4.0f;
-		aOffsetY = 3.0f;
-		break;
-
 	case SeedType::SEED_ZOMBIE_LADDER:
 	case SeedType::SEED_ZOMBIE_DIGGER:
 	case SeedType::SEED_ZOMBIE_SCREEN_DOOR:
@@ -497,6 +495,12 @@ void DrawSeedPacket(Graphics* g, float x, float y, SeedType theSeedType, SeedTyp
 		break;
 
 	case SeedType::SEED_ZOMBIE_GARGANTUAR:
+		aScale = 0.23f;
+		aOffsetX = 4.0f;
+		aOffsetY = 3.0f;
+		break;
+
+	case SeedType::SEED_ZOMBIE_REDEYE_GARGANTUAR:
 		aScale = 0.23f;
 		aOffsetX = 4.0f;
 		aOffsetY = 3.0f;
@@ -587,6 +591,8 @@ void DrawSeedPacket(Graphics* g, float x, float y, SeedType theSeedType, SeedTyp
 
 	g->SetColorizeImages(false);
 }
+
+
 
 void SeedPacket::Draw(Graphics* g)
 {
@@ -819,6 +825,17 @@ void SeedPacket::MouseDown(int x, int y, int theClickCount)
 	}
 	else
 	{
+		
+
+		if (HandleActivateableSeedPacket(mPacketType))
+		{
+			if (mBoard->TakeSunMoney(mBoard->GetCurrentPlantCost(mPacketType, this->mImitaterType)))
+			{
+				mBoard->mSeedBank->mSeedPackets[mIndex].WasPlanted();
+				return;
+			}
+		}
+		
 		mBoard->mCursorObject->mType = mPacketType;
 		mBoard->mCursorObject->mImitaterType = mImitaterType;
 		mBoard->mCursorObject->mCursorType = CursorType::CURSOR_TYPE_PLANT_FROM_BANK;
@@ -858,6 +875,66 @@ void SeedPacket::MouseDown(int x, int y, int theClickCount)
 
 		Deactivate();
 	}
+}
+
+bool SeedPacket::HandleActivateableSeedPacket(SeedType theSeedPacket)
+{
+	//  If our packet is activateable, then do what needs to be done and deactivate
+	if (theSeedPacket == SEED_ZOMBIE_BUNGEE && mApp->IsIZombieLevel() == false)
+	{
+		//  Bungees will spawn in mind controlled reinforcements
+		mBoard->SpawnZombiesFromSky(true);
+		return true;
+	}
+	else if (theSeedPacket == SEED_ZOMBIE_FLAG)
+	{
+		int midRow = MAX_GRID_SIZE_Y / 2;
+		mBoard->AddZombieInRow(ZOMBIE_FLAG, midRow, false, true);
+		for (int aRow = 0; aRow < MAX_GRID_SIZE_Y; aRow++)
+		{
+			mBoard->AddZombieInRow(ZOMBIE_NORMAL, aRow, false, true);
+			mBoard->AddZombieInRow(ZOMBIE_TRAFFIC_CONE, aRow, false, true);
+
+		}
+
+		//  Be nice and try spawn one of our random zomb seeds
+		vector<SeedPacket> zombieSeeds;
+		for (SeedPacket seed : mBoard->mSeedBank->mSeedPackets)
+		{
+			if (Challenge::IsZombieSeedType(seed.mPacketType)
+				&& seed.mPacketType != SEED_ZOMBIE_BUNGEE
+				&& seed.mPacketType != SEED_ZOMBIE_FLAG
+				&& seed.mPacketType != SEED_ZOMBIE_BOSS)
+			{
+				zombieSeeds.push_back(seed);
+			}
+		}
+
+		for (SeedPacket packet : zombieSeeds)
+		{
+			
+		ZombieType zomb = Challenge::IZombieSeedTypeToZombieType(packet.mPacketType);
+		for (int aRow = 0; aRow < MAX_GRID_SIZE_Y; aRow++)
+		{
+			mBoard->AddZombieInRow(zomb, aRow, false, true);
+
+		}
+		}
+
+		return true;
+
+	}
+	else if (theSeedPacket == SEED_ZOMBIE_BOSS)
+	{
+
+		mBoard->AddZombieInRow(ZombieType::ZOMBIE_BOSS, 0, 0, true);
+		Deactivate();
+		return true;
+
+	}
+
+
+	return false;
 }
 
 void SeedPacket::WasPlanted()
@@ -1135,6 +1212,8 @@ void SeedPacket::SetPacketType(SeedType theSeedType, SeedType theImitaterType)
 	}
 }
 
+
+
 void SeedBank::UpdateConveyorBelt()
 {
 	mConveyorBeltCounter++;
@@ -1182,3 +1261,5 @@ void SeedBank::RefreshAllPackets()
 		}
 	}
 }
+
+

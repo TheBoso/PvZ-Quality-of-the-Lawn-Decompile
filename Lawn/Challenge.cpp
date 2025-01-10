@@ -4227,59 +4227,66 @@ void Challenge::PuzzleNextStageClear()
 
 ZombieType Challenge::IZombieSeedTypeToZombieType(SeedType theSeedType)
 {
-	switch (theSeedType)
-	{
-	case SEED_ZOMBIE_NORMAL:		return ZOMBIE_NORMAL;
-	case SEED_ZOMBIE_TRAFFIC_CONE:	return ZOMBIE_TRAFFIC_CONE;
-	case SEED_ZOMBIE_POLEVAULTER:	return ZOMBIE_POLEVAULTER;
-	case SEED_ZOMBIE_PAIL:			return ZOMBIE_PAIL;
-	case SEED_ZOMBIE_LADDER:		return ZOMBIE_LADDER;
-	case SEED_ZOMBIE_DIGGER:		return ZOMBIE_DIGGER;
-	case SEED_ZOMBIE_BUNGEE:		return ZOMBIE_BUNGEE;
-	case SEED_ZOMBIE_FOOTBALL:		return ZOMBIE_FOOTBALL;
-	case SEED_ZOMBIE_BALLOON:		return ZOMBIE_BALLOON;
-	case SEED_ZOMBIE_SCREEN_DOOR:	return ZOMBIE_DOOR;
-	case SEED_ZOMBONI:				return ZOMBIE_ZAMBONI;
-	case SEED_ZOMBIE_POGO:			return ZOMBIE_POGO;
-	case SEED_ZOMBIE_DANCER:		return ZOMBIE_DANCER;
-	case SEED_ZOMBIE_GARGANTUAR:	return ZOMBIE_GARGANTUAR;
-	case SEED_ZOMBIE_IMP:			return ZOMBIE_IMP;
-	case SEED_ZOMBIE_FLAG:              return ZOMBIE_FLAG;
-	case SEED_ZOMBIE_NEWSPAPER:         return ZOMBIE_NEWSPAPER;
-	case SEED_ZOMBIE_BACKUP_DANCER:     return ZOMBIE_BACKUP_DANCER;
-	case SEED_ZOMBIE_DUCKY_TUBE:        return ZOMBIE_DUCKY_TUBE;
-	case SEED_ZOMBIE_SNORKEL:           return ZOMBIE_SNORKEL;
-	case SEED_ZOMBIE_BOBSLED:           return ZOMBIE_BOBSLED;
-	case SEED_ZOMBIE_DOLPHIN_RIDER:     return ZOMBIE_DOLPHIN_RIDER;
-	case SEED_ZOMBIE_JACK_IN_THE_BOX:   return ZOMBIE_JACK_IN_THE_BOX;
-	case SEED_ZOMBIE_YETI:              return ZOMBIE_YETI;
-	case SEED_ZOMBIE_CATAPULT:          return ZOMBIE_CATAPULT;
-	case SEED_ZOMBIE_BOSS:              return ZOMBIE_BOSS;
-	case SEED_ZOMBIE_REDEYE_GARGANTUAR: return ZOMBIE_REDEYE_GARGANTUAR;
-	case SEED_ZOMBIE_PEA_HEAD:          return ZOMBIE_PEA_HEAD;
-	case SEED_ZOMBIE_WALLNUT_HEAD:      return ZOMBIE_WALLNUT_HEAD;
-	case SEED_ZOMBIE_JALAPENO_HEAD:     return ZOMBIE_JALAPENO_HEAD;
-	case SEED_ZOMBIE_GATLING_HEAD:      return ZOMBIE_GATLING_HEAD;
-	case SEED_ZOMBIE_SQUASH_HEAD:       return ZOMBIE_SQUASH_HEAD;
-	case SEED_ZOMBIE_TALLNUT_HEAD:      return ZOMBIE_TALLNUT_HEAD;
-	default:						TOD_ASSERT();
-	}
+	  switch (theSeedType)
+    {
+    case SEED_ZOMBIE_NORMAL:            return ZOMBIE_NORMAL;
+    case SEED_ZOMBIE_TRAFFIC_CONE:      return ZOMBIE_TRAFFIC_CONE;
+    case SEED_ZOMBIE_POLEVAULTER:       return ZOMBIE_POLEVAULTER;
+    case SEED_ZOMBIE_PAIL:              return ZOMBIE_PAIL;
+    case SEED_ZOMBIE_LADDER:            return ZOMBIE_LADDER;
+    case SEED_ZOMBIE_DIGGER:            return ZOMBIE_DIGGER;
+    case SEED_ZOMBIE_BUNGEE:            return ZOMBIE_BUNGEE;
+    case SEED_ZOMBIE_FOOTBALL:          return ZOMBIE_FOOTBALL;
+    case SEED_ZOMBIE_BALLOON:           return ZOMBIE_BALLOON;
+    case SEED_ZOMBIE_SCREEN_DOOR:       return ZOMBIE_DOOR;
+    case SEED_ZOMBONI:                  return ZOMBIE_ZAMBONI;
+    case SEED_ZOMBIE_POGO:              return ZOMBIE_POGO;
+    case SEED_ZOMBIE_DANCER:            return ZOMBIE_DANCER;
+    case SEED_ZOMBIE_GARGANTUAR:        return ZOMBIE_GARGANTUAR;
+    case SEED_ZOMBIE_IMP:               return ZOMBIE_IMP;
+    case SEED_ZOMBIE_FLAG:              return ZOMBIE_FLAG;
+    case SEED_ZOMBIE_NEWSPAPER:         return ZOMBIE_NEWSPAPER;
+    case SEED_ZOMBIE_BACKUP_DANCER:     return ZOMBIE_BACKUP_DANCER;
+    case SEED_ZOMBIE_DUCKY_TUBE:        return ZOMBIE_DUCKY_TUBE;
+    case SEED_ZOMBIE_SNORKEL:           return ZOMBIE_SNORKEL;
+    case SEED_ZOMBIE_BOBSLED:           return ZOMBIE_BOBSLED;
+    case SEED_ZOMBIE_DOLPHIN_RIDER:     return ZOMBIE_DOLPHIN_RIDER;
+    case SEED_ZOMBIE_JACK_IN_THE_BOX:   return ZOMBIE_JACK_IN_THE_BOX;
+    case SEED_ZOMBIE_YETI:              return ZOMBIE_YETI;
+    case SEED_ZOMBIE_CATAPULT:          return ZOMBIE_CATAPULT;
+    case SEED_ZOMBIE_BOSS:              return ZOMBIE_BOSS;
+    case SEED_ZOMBIE_REDEYE_GARGANTUAR: return ZOMBIE_REDEYE_GARGANTUAR;
+    case SEED_ZOMBIE_PEA_HEAD:          return ZOMBIE_PEA_HEAD;
+    case SEED_ZOMBIE_WALLNUT_HEAD:      return ZOMBIE_WALLNUT_HEAD;
+    case SEED_ZOMBIE_JALAPENO_HEAD:     return ZOMBIE_JALAPENO_HEAD;
+    case SEED_ZOMBIE_GATLING_HEAD:      return ZOMBIE_GATLING_HEAD;
+    case SEED_ZOMBIE_SQUASH_HEAD:       return ZOMBIE_SQUASH_HEAD;
+    case SEED_ZOMBIE_TALLNUT_HEAD:      return ZOMBIE_TALLNUT_HEAD;
+    default:                            TOD_ASSERT();
+    }
 }
 
 void Challenge::IZombiePlaceZombie(ZombieType theZombieType, int theGridX, int theGridY)
 {
-	Zombie* aZombie = mBoard->AddZombieInRow(theZombieType, theGridY, 0);
 	if (theZombieType == ZOMBIE_BUNGEE)
 	{
+	Zombie* aZombie = mBoard->AddZombie(theZombieType, false);
+	
 		aZombie->mTargetCol = theGridX;
 		aZombie->SetRow(theGridY);
 		aZombie->mPosX = mBoard->GridToPixelX(theGridX, theGridY);
 		aZombie->mPosY = aZombie->GetPosYBasedOnRow(theGridY);
 		aZombie->mRenderOrder = Board::MakeRenderOrder(RENDER_LAYER_GRAVE_STONE, theGridY, 7);
+		
 	}
 	else
 	{
-		aZombie->mPosX = mBoard->GridToPixelX(theGridX, theGridY) - 30.0f;
+		if(this->mApp->IsIZombieLevel() == false)
+		{
+			
+			mBoard->AddZombieInRow(theZombieType, theGridY,false, true
+				);
+		}
 	}
 }
 
@@ -4694,10 +4701,7 @@ void Challenge::IZombieUpdate()
 bool Challenge::IsZombieSeedType(SeedType theSeedType)
 {
 	return 
-		theSeedType == SEED_ZOMBIQUARIUM_SNORKLE ||
-		theSeedType == SEED_ZOMBIQUARIUM_TROPHY ||
-		theSeedType >= SEED_ZOMBIE_NORMAL && theSeedType < ZOMBIES_END;
-
+		theSeedType >= SEED_ZOMBIE_NORMAL && theSeedType <= SEED_ZOMBIE_TALLNUT_HEAD;
 }
 
 void Challenge::IZombieSetPlantFilterEffect(Plant* thePlant, FilterEffect theFilterEffect)

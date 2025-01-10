@@ -161,13 +161,13 @@ public:
     int                             mFireballRow;                               
     bool                            mIsFireBall;                                
     ReanimationID                   mMoweredReanimID;                           
-    int                             mLastPortalX;                               
+    int                             mLastPortalX;
 
 public:
     Zombie();
     ~Zombie();
 
-    void                            ZombieInitialize(int theRow, ZombieType theType, bool theVariant, Zombie* theParentZombie, int theFromWave);
+    void                            ZombieInitialize(int theRow, ZombieType theType, bool theVariant, Zombie* theParentZombie, int theFromWave, bool startMindControlled = false);
     void                            Animate();
     void                            CheckIfPreyCaught();
     void                            EatZombie(Zombie* theZombie);

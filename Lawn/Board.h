@@ -340,7 +340,7 @@ public:
 	bool							IterateParticles(TodParticleSystem*& theParticle);
 	bool							IterateReanimations(Reanimation*& theReanimation);
 	bool							IterateGridItems(GridItem*& theGridItem);
-	/*inline*/ Zombie*				AddZombieInRow(ZombieType theZombieType, int theRow, int theFromWave);
+	/*inline*/ Zombie*				AddZombieInRow(ZombieType theZombieType, int theRow, int theFromWave, bool friendlyZombie = false);
 	/*inline*/ bool					IsPoolSquare(int theGridX, int theGridY);
 	void							PickZombieWaves();
 	void							StopAllZombieSounds();
@@ -409,12 +409,12 @@ public:
 	bool							HasConveyorBeltSeedBank();
 	/*inline*/ bool					StageHasRoof();
 	void							SpawnZombiesFromPool();
-	void							SpawnZombiesFromSky();
+	void							SpawnZombiesFromSky(bool mindControlled = false);
 	void							PickUpTool(GameObjectType theObjectType);
 	void							TutorialArrowShow(int theX, int theY);
 	void							TutorialArrowRemove();
 	int								CountCoinsBeingCollected();
-	void							BungeeDropZombie(BungeeDropGrid* theBungeeDropGrid, ZombieType theZombieType);
+	void							BungeeDropZombie(BungeeDropGrid* theBungeeDropGrid, ZombieType theZombieType, bool isMindControlled = false);
 	void							SetupBungeeDrop(BungeeDropGrid* theBungeeDropGrid);
 	/*inline*/ void					PutZombieInWave(ZombieType theZombieType, int theWaveNumber, ZombiePicker* theZombiePicker);
 	/*inline*/ void					PutInMissingZombies(int theWaveNumber, ZombiePicker* theZombiePicker);

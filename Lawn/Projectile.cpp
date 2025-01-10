@@ -206,7 +206,7 @@ Zombie* Projectile::FindCollisionTarget()
 	Zombie* aZombie = nullptr;
 	while (mBoard->IterateZombies(aZombie))
 	{
-		if ((aZombie->mZombieType == ZombieType::ZOMBIE_BOSS || aZombie->mRow == mRow) && aZombie->EffectedByDamage((unsigned int)mDamageRangeFlags))
+		if ((aZombie->mZombieType == ZombieType::ZOMBIE_BOSS || aZombie->mRow == mRow) && aZombie->EffectedByDamage((unsigned int)mDamageRangeFlags) || aZombie->mMindControlled && this->mOwnerTeamID == 1)
 		{
 			if (aZombie->mZombiePhase == ZombiePhase::PHASE_SNORKEL_WALKING_IN_POOL && mPosZ >= 45.0f)
 			{
@@ -280,16 +280,34 @@ void Projectile::CheckForCollision()
 
 	if (mProjectileType == ProjectileType::PROJECTILE_ZOMBIE_PEA)
 	{
-		Plant* aPlant = FindCollisionTargetPlant();
-		if (aPlant)
+		//  came from a non mind controller zombie if its 1
+		if (mOwnerTeamID == 1)
 		{
-			const ProjectileDefinition& aProjectileDef = GetProjectileDef();
-			aPlant->mPlantHealth -= aProjectileDef.mDamage;
-			aPlant->mEatenFlashCountdown = max(aPlant->mEatenFlashCountdown, 25);
+			Zombie* target = FindCollisionTarget();
+			if (target != nullptr && target->mMindControlled)
+			{
+				if (target->mOnHighGround == false  && CantHitHighGround() == false)
+				{
+					const ProjectileDefinition& aProjectileDef = GetProjectileDef();
+					DoImpact(target);
+				}
 
-			mApp->PlayFoley(FoleyType::FOLEY_SPLAT);
-			mApp->AddTodParticle(mPosX - 3.0f, mPosY + 17.0f, mRenderOrder + 1, ParticleEffect::PARTICLE_PEA_SPLAT);
-			Die();
+			
+			}
+			else
+			{
+				Plant* aPlant = FindCollisionTargetPlant();
+				if (aPlant)
+				{
+					const ProjectileDefinition& aProjectileDef = GetProjectileDef();
+					aPlant->mPlantHealth -= aProjectileDef.mDamage;
+					aPlant->mEatenFlashCountdown = max(aPlant->mEatenFlashCountdown, 25);
+
+					mApp->PlayFoley(FoleyType::FOLEY_SPLAT);
+					mApp->AddTodParticle(mPosX - 3.0f, mPosY + 17.0f, mRenderOrder + 1, ParticleEffect::PARTICLE_PEA_SPLAT);
+					Die();
+				}
+			}
 		}
 		return;
 	}

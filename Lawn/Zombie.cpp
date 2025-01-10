@@ -17,6 +17,8 @@
 #include "../Sexy.TodLib/Attachment.h"
 #include "../Sexy.TodLib/TodParticle.h"
 
+#define SHOW_MIND_CONTROL_EFFECT true
+
 ZombieDefinition gZombieDefs[NUM_ZOMBIE_TYPES] = {  
     { ZOMBIE_NORMAL,            REANIM_ZOMBIE,              1,      1,      1,      4000,   _S("ZOMBIE")},
     { ZOMBIE_FLAG,              REANIM_ZOMBIE,              1,      1,      1,      0,      _S("FLAG_ZOMBIE")},
@@ -80,7 +82,7 @@ Zombie::Zombie()
 {
 }
 
-void Zombie::ZombieInitialize(int theRow, ZombieType theType, bool theVariant, Zombie* theParentZombie, int theFromWave)
+void Zombie::ZombieInitialize(int theRow, ZombieType theType, bool theVariant, Zombie* theParentZombie, int theFromWave, bool startMindControlled)
 {
     TOD_ASSERT(theType >= 0 && theType <= ZombieType::NUM_ZOMBIE_TYPES);
 
@@ -103,7 +105,7 @@ void Zombie::ZombieInitialize(int theRow, ZombieType theType, bool theVariant, Z
     mChilledCounter = 0;
     mIceTrapCounter = 0;
     mButteredCounter = 0;
-    mMindControlled = false;
+    mMindControlled = startMindControlled;
     mBlowingAway = false;
     mHasHead = true;
     mHasArm = true;
@@ -1473,7 +1475,6 @@ void Zombie::ZombieCatapultFire(Plant* thePlant)
 Plant* Zombie::FindCatapultTarget()
 {
     Plant* aTarget = nullptr;
-
     Plant* aPlant = nullptr;
     while (mBoard->IteratePlants(aPlant))
     {
@@ -1493,6 +1494,7 @@ void Zombie::UpdateZombieCatapult()
 {
     if (mZombiePhase == ZombiePhase::PHASE_ZOMBIE_NORMAL)
     {
+        if (mMindControlled) return;
         if (mPosX <= 650 && FindCatapultTarget() && mSummonCounter > 0)
         {
             mZombiePhase = ZombiePhase::PHASE_CATAPULT_LAUNCHING;
@@ -1624,7 +1626,7 @@ void Zombie::UpdateZombieNewspaper()
 
 void Zombie::UpdateZombiePolevaulter()
 {
-    if (mZombiePhase == ZombiePhase::PHASE_POLEVAULTER_PRE_VAULT && mHasHead && mZombieHeight == ZombieHeight::HEIGHT_ZOMBIE_NORMAL)
+    if (mMindControlled == false && mZombiePhase == ZombiePhase::PHASE_POLEVAULTER_PRE_VAULT && mHasHead && mZombieHeight == ZombieHeight::HEIGHT_ZOMBIE_NORMAL)
     {
         Plant* aPlant = FindPlantTarget(ZombieAttackType::ATTACKTYPE_VAULT);
         if (aPlant)
@@ -1652,6 +1654,12 @@ void Zombie::UpdateZombiePolevaulter()
             }
             mVelX = aJumpDistance / aAnimDuration;
             mHasObject = false;
+        }
+
+        if (mZombiePhase == ZombiePhase::PHASE_POLEVAULTER_PRE_VAULT && mMindControlled)
+        {
+            mZombiePhase = ZombiePhase::PHASE_POLEVAULTER_POST_VAULT;
+            StartWalkAnim(0);
         }
 
         if (mApp->IsIZombieLevel() && mBoard->mChallenge->IZombieGetBrainTarget(this))
@@ -2143,7 +2151,11 @@ void Zombie::UpdateZombieGargantuar()
     }
 
     bool doSmash = false;
-    if (FindPlantTarget(ZombieAttackType::ATTACKTYPE_CHEW))
+    if (mMindControlled && FindZombieTarget())
+    {
+        doSmash = true;
+    }
+     if (mMindControlled == false && FindPlantTarget(ZombieAttackType::ATTACKTYPE_CHEW))
     {
         doSmash = true;
     }
@@ -2233,6 +2245,8 @@ void Zombie::UpdateZombiePeaHead()
         {
             Projectile* aProjectile = mBoard->AddProjectile(aOriginX, aOriginY, mRenderOrder, mRow, ProjectileType::PROJECTILE_ZOMBIE_PEA);
             aProjectile->mMotionType = ProjectileMotion::MOTION_BACKWARDS;
+            aProjectile->mOwnerTeamID = 1;
+ 
         }
 
         mPhaseCounter = 150;
@@ -2527,13 +2541,14 @@ void Zombie::UpdateZombieBobsled()
         Reanimation* aBodyReanim = mApp->ReanimationGet(mBodyReanimID);
         int aCounter = aBodyReanim->mAnimTime * 50.0f;
         int aPosition = GetBobsledPosition();
+        float multiplier = mMindControlled ? -1 : 1;
         if (aPosition == 1 || aPosition == 3)
         {
-            mAltitude = TodAnimateCurveFloat(0, 50, aCounter, 8.0f, 18.0f, TodCurves::CURVE_LINEAR);
+            mAltitude = TodAnimateCurveFloat(0, 50, aCounter, 8.0f * multiplier, 18.0f * multiplier, TodCurves::CURVE_LINEAR);
         }
         else
         {
-            mAltitude = TodAnimateCurveFloat(0, 50, aCounter, -9.0f, 18.0f, TodCurves::CURVE_LINEAR);
+            mAltitude = TodAnimateCurveFloat(0, 50, aCounter, -9.0f * multiplier, 18.0f * multiplier, TodCurves::CURVE_LINEAR);
         }
     }
 
@@ -3201,12 +3216,14 @@ void Zombie::OverrideParticleScale(TodParticleSystem* aParticle)
     }
 }
 
+
 void Zombie::OverrideParticleColor(TodParticleSystem* aParticle)
 {
     if (aParticle)
     {
-        if (mMindControlled)
+        if (mMindControlled )
         {
+            return;
             aParticle->OverrideColor(nullptr, ZOMBIE_MINDCONTROLLED_COLOR);
             aParticle->OverrideExtraAdditiveDraw(nullptr, true);
         }
@@ -4936,10 +4953,13 @@ void Zombie::DrawZombiePart(Graphics* g, Image* theImage, int theFrame, int theR
     else if (mMindControlled)
     {
         aMirror = true;
-        g->SetColorizeImages(true);
-        Color aMincontrolledColor = ZOMBIE_MINDCONTROLLED_COLOR;
-        aMincontrolledColor.mAlpha = anAlpha;
-        g->SetColor(aMincontrolledColor);
+        if (SHOW_MIND_CONTROL_EFFECT)
+        {
+            g->SetColorizeImages(true);
+            Color aMincontrolledColor = ZOMBIE_MINDCONTROLLED_COLOR;
+            aMincontrolledColor.mAlpha = anAlpha;
+            g->SetColor(aMincontrolledColor);
+        }
         g->DrawImageMirror(theImage, aDestRect, aSrcRect, aMirror);
 
         g->SetDrawMode(Graphics::DRAWMODE_ADDITIVE);
@@ -5461,7 +5481,7 @@ void Zombie::DrawReanim(Graphics* g, const ZombieDrawPosition& theDrawPos, int t
         aExtraAdditiveColor = Color::Black;
         aEnableExtraAdditiveDraw = false;
     }
-    else if (mMindControlled)
+    else if (mMindControlled && SHOW_MIND_CONTROL_EFFECT)
     {
         aColorOverride = ZOMBIE_MINDCONTROLLED_COLOR;
         aColorOverride.mAlpha = aFadeAlpha;
@@ -6224,22 +6244,48 @@ Zombie* Zombie::FindZombieTarget()
 
 void Zombie::SquishAllInSquare(int theX, int theY, ZombieAttackType theAttackType)
 {
-    Plant* aPlant = nullptr;
-    while (mBoard->IteratePlants(aPlant))
+    if (mMindControlled == false)
     {
-        if (aPlant->mRow == theY && aPlant->mPlantCol == theX)
-        {
-            if (theAttackType == ZombieAttackType::ATTACKTYPE_DRIVE_OVER && aPlant->IsSpiky())
-            {
-                continue;
-            }
+        Plant* aPlant = nullptr;
 
-            if (aPlant->mSeedType != SeedType::SEED_SPIKEROCK)
+        while (mBoard->IteratePlants(aPlant))
+        {
+            if (aPlant->mRow == theY && aPlant->mPlantCol == theX)
             {
-                mBoard->mPlantsEaten++;
-                aPlant->Squish();
+                if (theAttackType == ZombieAttackType::ATTACKTYPE_DRIVE_OVER && aPlant->IsSpiky())
+                {
+                    continue;
+                }
+
+                if (aPlant->mSeedType != SeedType::SEED_SPIKEROCK)
+                {
+                    mBoard->mPlantsEaten++;
+                    aPlant->Squish();
+                }
             }
         }
+    }
+    else
+    {
+        Zombie* aZombie = FindZombieTarget();
+        
+    if (aZombie == nullptr) return;
+        if (aZombie->mMindControlled) return;
+
+            
+        ZombieType zombType = aZombie->mZombieType;
+        if (zombType == ZOMBIE_GARGANTUAR || zombType == ZOMBIE_REDEYE_GARGANTUAR || zombType == ZOMBIE_BOSS)
+        {
+            return;
+        }
+        
+     
+
+            if (aZombie->mRow == theY)
+            {
+                aZombie->DieNoLoot();
+            }
+        
     }
 }
 
@@ -6304,6 +6350,9 @@ void Zombie::CheckSquish(ZombieAttackType theAttackType)
 {
     Rect aAttackRect = GetZombieAttackRect();
 
+    if (this->mMindControlled == false)
+    {
+        
     Plant* aPlant = nullptr;
     while (mBoard->IteratePlants(aPlant))
     {
@@ -6317,7 +6366,26 @@ void Zombie::CheckSquish(ZombieAttackType theAttackType)
             }
         }
     }
+    }
+    else
+    {
+        Zombie* aZombie = nullptr;
 
+        while (mBoard->IterateZombies(aZombie))
+        {
+            if (aZombie->mMindControlled) continue;
+            if (aZombie->mRow == mRow)
+            {
+                Rect aPlantRect = aZombie->GetZombieRect();
+                if (GetRectOverlap(aAttackRect, aPlantRect) >= 20)
+                {
+                    SquishAllInSquare(aZombie->mPosY, aZombie->mRow, theAttackType);
+                    break;
+                }
+            }
+        }
+        
+    }
     if (mApp->IsIZombieLevel())
     {
         GridItem* aBrain = mBoard->mChallenge->IZombieGetBrainTarget(this);
@@ -6738,7 +6806,7 @@ void Zombie::CheckForHighGround()
 
 void Zombie::StartMindControlled()
 {
-    mApp->PlaySample(SOUND_MINDCONTROLLED);
+  //  mApp->PlaySample(SOUND_MINDCONTROLLED);
     mMindControlled = true;
     mLastPortalX = -1;
 
@@ -9599,7 +9667,12 @@ void Zombie::BossSpawnContact()
     }
 
     Zombie* aZombie = mBoard->AddZombieInRow(aZombieType, mTargetRow, 0);
-    aZombie->mPosX = 600.0f;
+    if (mMindControlled)
+    {
+        aZombie->StartMindControlled();
+    }
+    
+    aZombie->mPosX = 600.0f * mMindControlled ? -1 : 1;
 }
 
 void Zombie::BossStompAttack()
@@ -10068,6 +10141,11 @@ void Zombie::UpdateBoss()
     }
     else if (mZombiePhase == ZombiePhase::PHASE_BOSS_STOMPING)
     {
+        if (mMindControlled)
+        {
+            mZombiePhase = ZombiePhase::PHASE_BOSS_IDLE;
+            return;
+        }
         float aTrigger = 0.5f;
         if (mTargetRow >= 2)
         {
@@ -10085,6 +10163,12 @@ void Zombie::UpdateBoss()
     }
     else if (mZombiePhase == ZombiePhase::PHASE_BOSS_BUNGEES_ENTER)
     {
+        if (mMindControlled)
+        {
+            mZombiePhase = ZombiePhase::PHASE_BOSS_IDLE;
+            return;
+        }
+        
         if (aBodyReanim->ShouldTriggerTimedEvent(0.4f))
         {
             BossBungeeSpawn();
@@ -10092,6 +10176,11 @@ void Zombie::UpdateBoss()
     }
     else if (mZombiePhase == ZombiePhase::PHASE_BOSS_BUNGEES_DROP)
     {
+        if (mMindControlled)
+        {
+            mZombiePhase = ZombiePhase::PHASE_BOSS_IDLE;
+            return;
+        }
         if (BossAreBungeesDone())
         {
             BossBungeeLeave();
@@ -10099,6 +10188,11 @@ void Zombie::UpdateBoss()
     }
     else if (mZombiePhase == ZombiePhase::PHASE_BOSS_BUNGEES_LEAVE)
     {
+        if (mMindControlled)
+        {
+            mZombiePhase = ZombiePhase::PHASE_BOSS_IDLE;
+            return;
+        }
         if (aBodyReanim->mLoopCount > 0)
         {
             BossPlayIdle();
@@ -10106,6 +10200,12 @@ void Zombie::UpdateBoss()
     }
     else if (mZombiePhase == ZombiePhase::PHASE_BOSS_DROP_RV)
     {
+        if (mMindControlled)
+        {
+            mZombiePhase = ZombiePhase::PHASE_BOSS_IDLE;
+            return;
+        }
+        
         if (aBodyReanim->ShouldTriggerTimedEvent(0.65f))
         {
             BossRVLanding();
@@ -10118,6 +10218,7 @@ void Zombie::UpdateBoss()
     }
     else if (mZombiePhase == ZombiePhase::PHASE_BOSS_HEAD_ENTER)
     {
+        
         if (GetBodyDamageIndex() == 2 && aBodyReanim->ShouldTriggerTimedEvent(0.37f))
         {
             ApplyBossSmokeParticles(true);
@@ -10148,6 +10249,12 @@ void Zombie::UpdateBoss()
     }
     else if (mZombiePhase == ZombiePhase::PHASE_BOSS_HEAD_SPIT)
     {
+        if (mMindControlled)
+        {
+            mZombiePhase = ZombiePhase::PHASE_BOSS_HEAD_IDLE_AFTER_SPIT;
+            return;
+        }
+        
         if (aBodyReanim->ShouldTriggerTimedEvent(0.37f))
         {
             BossHeadSpitEffect();

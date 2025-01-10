@@ -21,8 +21,6 @@
 #include "../../SexyAppFramework/WidgetManager.h"
 #include "../../SexyAppFramework/Slider.h"
 
-#define ZOMBIES_ONLY true
-
 const Rect cSeedClipRect = Rect(0, 123, BOARD_WIDTH, 420);
 const int seedPacketRows = 8;
 
@@ -134,26 +132,20 @@ SeedChooserScreen::SeedChooserScreen()
 
 	DBG_ASSERT(mApp->GetSeedsAvailable() < NUM_SEED_TYPES);
 	memset(mChosenSeeds, 0, sizeof(mChosenSeeds));
-	SeedType startingSeed = ZOMBIES_ONLY ? SEED_ZOMBIE_NORMAL : SEED_PEASHOOTER;
-	SeedType endSeed = ZOMBIES_ONLY ? ZOMBIES_END : NUM_SEEDS_IN_CHOOSER;
-	for (SeedType aSeedType = startingSeed; aSeedType < endSeed; aSeedType = (SeedType)(aSeedType + 1))
+
+/*
+	//  Setup Sun generators first
+	SetupSeed(SeedType::SEED_SUNFLOWER);
+	SetupSeed(SeedType::SEED_TWINSUNFLOWER);
+	SetupSeed(SeedType::SEED_SUNSHROOM);
+*/
+	//  Now setup Zombie Packets
+
+	for (SeedType aSeedType = SEED_PEASHOOTER; aSeedType < NUM_SEED_TYPES; aSeedType = (SeedType)(aSeedType + 1))
 	{
-		ChosenSeed& aChosenSeed = mChosenSeeds[aSeedType];
-		aChosenSeed.mSeedType = aSeedType;
-		GetSeedPositionInChooser(aSeedType, aChosenSeed.mX, aChosenSeed.mY);
-		aChosenSeed.mTimeStartMotion = 0;
-		aChosenSeed.mTimeEndMotion = 0;
-		aChosenSeed.mStartX = aChosenSeed.mX;
-		aChosenSeed.mStartY = aChosenSeed.mY;
-		aChosenSeed.mEndX = aChosenSeed.mX;
-		aChosenSeed.mEndY = aChosenSeed.mY;
-		aChosenSeed.mSeedState = SEED_IN_CHOOSER;
-		aChosenSeed.mSeedIndexInBank = 0;
-		aChosenSeed.mRefreshCounter = 0;
-		aChosenSeed.mRefreshing = false;
-		aChosenSeed.mImitaterType = SEED_NONE;
-		aChosenSeed.mCrazyDavePicked = false;
+		SetupSeed(aSeedType);
 	}
+	
 	if (mBoard->mCutScene->IsSurvivalRepick())
 	{
 		for (int anIdx = 0; anIdx < mBoard->mSeedBank->mNumPackets; anIdx++)
@@ -188,6 +180,27 @@ SeedChooserScreen::SeedChooserScreen()
 
 	mPreviousType = FindSeedInBank(mSeedsInBank - 1);
 }
+
+
+void SeedChooserScreen::SetupSeed(SeedType seed)
+{
+	ChosenSeed& aChosenSeed = mChosenSeeds[seed];
+	aChosenSeed.mSeedType = seed;
+	GetSeedPositionInChooser(seed, aChosenSeed.mX, aChosenSeed.mY);
+	aChosenSeed.mTimeStartMotion = 0;
+	aChosenSeed.mTimeEndMotion = 0;
+	aChosenSeed.mStartX = aChosenSeed.mX;
+	aChosenSeed.mStartY = aChosenSeed.mY;
+	aChosenSeed.mEndX = aChosenSeed.mX;
+	aChosenSeed.mEndY = aChosenSeed.mY;
+	aChosenSeed.mSeedState = SEED_IN_CHOOSER;
+	aChosenSeed.mSeedIndexInBank = 0;
+	aChosenSeed.mRefreshCounter = 0;
+	aChosenSeed.mRefreshing = false;
+	aChosenSeed.mImitaterType = SEED_NONE;
+	aChosenSeed.mCrazyDavePicked = false;
+}
+
 
 int SeedChooserScreen::PickFromWeightedArrayUsingSpecialRandSeed(TodWeightedArray* theArray, int theCount, MTRand& theLevelRNG)
 {
@@ -351,11 +364,7 @@ void SeedChooserScreen::Draw(Graphics* g)
 	}
 	TodDrawString(g, _S("[CHOOSE_YOUR_PLANTS]"), 229, 110, Sexy::FONT_DWARVENTODCRAFT18YELLOW, Color::White, DS_ALIGN_CENTER);
 	mSlider->SliderDraw(g);
-
-	SeedType startingSeed = ZOMBIES_ONLY ? SEED_ZOMBIE_NORMAL : SEED_PEASHOOTER;
-	SeedType endingSeed = ZOMBIES_ONLY ? ZOMBIES_END : NUM_SEEDS_IN_CHOOSER;
-	
-	for (SeedType aSeedType = startingSeed; aSeedType < endingSeed; aSeedType = (SeedType)(aSeedType + 1))
+	for (SeedType aSeedType = SEED_PEASHOOTER; aSeedType < NUM_SEEDS_IN_CHOOSER; aSeedType = (SeedType)(aSeedType + 1))
 	{
 		if (aSeedType != SEED_IMITATER)
 			g->SetClipRect(cSeedClipRect);
@@ -414,7 +423,7 @@ void SeedChooserScreen::Draw(Graphics* g)
 	}
 
 	// Draw flying seeds
-	for (SeedType aSeedType = startingSeed; aSeedType < endingSeed; aSeedType = (SeedType)(aSeedType + 1))
+	for (SeedType aSeedType = SEED_PEASHOOTER; aSeedType < NUM_SEEDS_IN_CHOOSER; aSeedType = (SeedType)(aSeedType + 1))
 	{
 		ChosenSeed& aChosenSeed = mChosenSeeds[aSeedType];
 		ChosenSeedState aSeedState = aChosenSeed.mSeedState;
@@ -871,7 +880,7 @@ Zombie* SeedChooserScreen::ZombieHitTest(int x, int y)
 
 SeedType SeedChooserScreen::FindSeedInBank(int theIndexInBank)
 {
-	for (SeedType aSeedType = SEED_PEASHOOTER; aSeedType < ZOMBIES_END; aSeedType = (SeedType)(aSeedType + 1))
+	for (SeedType aSeedType = SEED_PEASHOOTER; aSeedType < NUM_SEEDS_IN_CHOOSER; aSeedType = (SeedType)(aSeedType + 1))
 	{
 		if (mApp->SeedTypeAvailable(aSeedType))
 		{

@@ -2588,7 +2588,7 @@ bool Board::CanAddBobSled()
 	return false;
 }
 
-Zombie* Board::AddZombieInRow(ZombieType theZombieType, int theRow, int theFromWave)
+Zombie* Board::AddZombieInRow(ZombieType theZombieType, int theRow, int theFromWave, bool friendlyZombie)
 {
 	if (mZombies.mSize >= mZombies.mMaxSize - 1)
 	{
@@ -2599,12 +2599,22 @@ Zombie* Board::AddZombieInRow(ZombieType theZombieType, int theRow, int theFromW
 		mApp->GetAchievement(ACHIEVEMENT_ZOMBOLOGIST);
 	bool aVariant = !Rand(5);
 	Zombie* aZombie = mZombies.DataArrayAlloc();
-	aZombie->ZombieInitialize(theRow, theZombieType, aVariant, nullptr, theFromWave);
+
+	aZombie->ZombieInitialize(theRow, theZombieType, aVariant, nullptr, theFromWave, friendlyZombie);
+	if (friendlyZombie)
+	{
+		aZombie->mPosX = -50;
+	}
 	if (theZombieType == ZombieType::ZOMBIE_BOBSLED && aZombie->IsOnBoard())
 	{
+		
 		for (int _i = 0; _i < 3; _i++)
 		{
-			mZombies.DataArrayAlloc()->ZombieInitialize(theRow, ZombieType::ZOMBIE_BOBSLED, false, aZombie, theFromWave);
+			mZombies.DataArrayAlloc()->ZombieInitialize(theRow, ZombieType::ZOMBIE_BOBSLED, false, aZombie, theFromWave, friendlyZombie);
+			if (friendlyZombie)
+			{
+				aZombie->mPosX = -50;
+			}
 		}
 	}
 	return aZombie;
@@ -3477,14 +3487,15 @@ void Board::MouseDownWithPlant(int x, int y, int theClickCount)
 		mApp->PlayFoley(FoleyType::FOLEY_DROP);
 		return;
 	}
-
-	if (Challenge::IsZombieSeedType(GetSeedTypeInCursor()) && mApp->mGameMode != GAMEMODE_CHALLENGE_ZOMBIQUARIUM)
-	{
-		mChallenge->IZombieMouseDownWithZombie(x, y, theClickCount);
-		return;
-	}
-
 	SeedType aPlantingSeedType = GetSeedTypeInCursor();
+
+		if(aPlantingSeedType <= SeedType::SEED_ZOMBIE_TALLNUT_HEAD && aPlantingSeedType >= SEED_ZOMBIE_NORMAL)
+		{
+			mChallenge->IZombieMouseDownWithZombie(x, y, theClickCount);
+			return;
+		}
+
+
 	int aGridX = PlantingPixelToGridX(x, y, aPlantingSeedType);
 	int aGridY = PlantingPixelToGridY(x, y, aPlantingSeedType);
 
@@ -4670,19 +4681,26 @@ void Board::SetupBungeeDrop(BungeeDropGrid* theBungeeDropGrid)
 	}
 }
 
-void Board::BungeeDropZombie(BungeeDropGrid* theBungeeDropGrid, ZombieType theZombieType)
+void Board::BungeeDropZombie(BungeeDropGrid* theBungeeDropGrid, ZombieType theZombieType, bool isMindControlled)
 {
 	TodWeightedGridArray* aGrid = TodPickFromWeightedGridArray(theBungeeDropGrid->mGridArray, theBungeeDropGrid->mGridArrayCount);
 	aGrid->mWeight = 1;
 
 	Zombie* aBungeeZombie = AddZombie(ZombieType::ZOMBIE_BUNGEE, mCurrentWave);
 	Zombie* aZombie = AddZombie(theZombieType, mCurrentWave);
+
+	if (isMindControlled)
+	{
+		aBungeeZombie->StartMindControlled();
+		aZombie->StartMindControlled();
+	}
+	
 	TOD_ASSERT(aBungeeZombie && aZombie);
 
 	aBungeeZombie->BungeeDropZombie(aZombie, aGrid->mX, aGrid->mY);
 }
 
-void Board::SpawnZombiesFromSky()
+void Board::SpawnZombiesFromSky(bool mindControlled)
 {
 	if (mIceTrapCounter > 0)
 		return;
@@ -4717,7 +4735,7 @@ void Board::SpawnZombiesFromSky()
 	for (int i = 0; i < aCount; i++)
 	{
 		ZombieType aZombieType = PickGraveRisingZombieType(aZombiePoints);
-		BungeeDropZombie(&aBungeeDropGrid, aZombieType);
+		BungeeDropZombie(&aBungeeDropGrid, aZombieType, mindControlled);
 		aZombiePoints -= GetZombieDefinition(aZombieType).mZombieValue;
 		if (aZombiePoints < 1)
 		{
@@ -4935,6 +4953,9 @@ void Board::PuzzleSaveStreak()
 
 void Board::ZombiesWon(Zombie* theZombie)
 {
+	if (theZombie->mMindControlled)
+		return;
+	
 	mApp->isFastMode = false;
 	if (mApp->mGameScene == GameScenes::SCENE_ZOMBIES_WON)
 		return;

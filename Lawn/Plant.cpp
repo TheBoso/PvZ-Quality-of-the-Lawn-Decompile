@@ -20,6 +20,7 @@
 #include "../Sexy.TodLib/TodParticle.h"
 #include "../Sexy.TodLib/EffectSystem.h"
 #include "../Sexy.TodLib/TodStringFile.h"
+#include "../SexyAppFramework/bass.h"
 
 PlantDefinition gPlantDefs[SeedType::NUM_SEED_TYPES] = {  
     { SeedType::SEED_PEASHOOTER,        nullptr, ReanimationType::REANIM_PEASHOOTER,    0,  100,    750,    PlantSubClass::SUBCLASS_SHOOTER,    150,    _S("PEASHOOTER") },
@@ -74,7 +75,8 @@ PlantDefinition gPlantDefs[SeedType::NUM_SEED_TYPES] = {
     { SeedType::SEED_EXPLODE_O_NUT,     nullptr, ReanimationType::REANIM_WALLNUT,       2,  0,      3000,   PlantSubClass::SUBCLASS_NORMAL,     0,      _S("EXPLODE_O_NUT") },
     { SeedType::SEED_GIANT_WALLNUT,     nullptr, ReanimationType::REANIM_WALLNUT,       2,  0,      3000,   PlantSubClass::SUBCLASS_NORMAL,     0,      _S("GIANT_WALLNUT") },
     { SeedType::SEED_SPROUT,            nullptr, ReanimationType::REANIM_ZENGARDEN_SPROUT,          33, 0,      3000,   PlantSubClass::SUBCLASS_NORMAL,     0,      _S("SPROUT") },
-    { SeedType::SEED_LEFTPEATER,        nullptr, ReanimationType::REANIM_REPEATER,      5,  200,    750,    PlantSubClass::SUBCLASS_SHOOTER,    150,    _S("REPEATER") }
+    { SeedType::SEED_LEFTPEATER,        nullptr, ReanimationType::REANIM_REPEATER,      5,  200,    750,    PlantSubClass::SUBCLASS_SHOOTER,    150,    _S("REPEATER") },
+
 };
 
 Plant::Plant()
@@ -4934,7 +4936,7 @@ void Plant::Die()
 
 PlantDefinition& GetPlantDefinition(SeedType theSeedType)
 {
-    TOD_ASSERT(gPlantDefs[theSeedType].mSeedType == theSeedType);
+  //  TOD_ASSERT(gPlantDefs[theSeedType].mSeedType == theSeedType);
     TOD_ASSERT(theSeedType >= 0 && theSeedType < (int)SeedType::NUM_SEED_TYPES);
     
     return gPlantDefs[theSeedType];
@@ -4972,6 +4974,7 @@ int Plant::GetCost(SeedType theSeedType, SeedType theImitaterType)
     case SeedType::SEED_SLOT_MACHINE_DIAMOND:       return 0;
     case SeedType::SEED_ZOMBIQUARIUM_SNORKLE:       return 100;
     case SeedType::SEED_ZOMBIQUARIUM_TROPHY:        return 1000;
+        
     case SeedType::SEED_ZOMBIE_NORMAL:              return 50;
     case SeedType::SEED_ZOMBIE_TRAFFIC_CONE:        return 75;
     case SeedType::SEED_ZOMBIE_POLEVAULTER:         return 75;
@@ -4986,37 +4989,37 @@ int Plant::GetCost(SeedType theSeedType, SeedType theImitaterType)
     case SeedType::SEED_ZOMBIE_POGO:                return 200;
     case SeedType::SEED_ZOMBIE_DANCER:              return 350;
     case SeedType::SEED_ZOMBIE_GARGANTUAR:          return 300;
-    case SeedType::SEED_ZOMBIE_REDEYE_GARGANTUAR:   return 450;
-    case SeedType::SEED_ZOMBIE_IMP:                 return 50;
+    case SeedType::SEED_ZOMBIE_REDEYE_GARGANTUAR:   return 500;
+    case SeedType::SEED_ZOMBIE_IMP:                 return 25;
     case SeedType::SEED_ZOMBIE_FLAG:
         {
             
-            int cost = 50;
-            for (SeedPacket packet : gLawnApp->mBoard->mSeedBank->mSeedPackets)
-            {
-                if (packet.mPacketType == SEED_ZOMBIE_FLAG || packet.mPacketType == SEED_NONE || Challenge::IsZombieSeedType(packet.mPacketType) == false) continue;
-                cost += Plant::GetCost(packet.mPacketType, packet.mImitaterType);
-            }
-
-            return cost;
+        int cost = 50;
+        for (SeedPacket packet : gLawnApp->mBoard->mSeedBank->mSeedPackets)
+        {
+            if (packet.mPacketType == SEED_ZOMBIE_FLAG || packet.mPacketType == SEED_NONE || Challenge::IsZombieSeedType(packet.mPacketType) == false) continue;
+            cost += Plant::GetCost(packet.mPacketType, packet.mImitaterType);
         }
 
-    case SeedType::SEED_ZOMBIE_NEWSPAPER:          return 125;
+        return cost;
+        }
+
+            case SeedType::SEED_ZOMBIE_NEWSPAPER:          return 125;
     case SeedType::SEED_ZOMBIE_BACKUP_DANCER:      return 100;
     case SeedType::SEED_ZOMBIE_DUCKY_TUBE:         return 75;
-   case SeedType::SEED_ZOMBIE_JACK_IN_THE_BOX:    return 200;
-    case SeedType::SEED_ZOMBIE_YETI:               return 0;
+    case SeedType::SEED_ZOMBIE_SNORKEL:            return 150;
+    case SeedType::SEED_ZOMBIE_BOBSLED:            return 175;
+    case SeedType::SEED_ZOMBIE_DOLPHIN_RIDER:      return 225;
+    case SeedType::SEED_ZOMBIE_JACK_IN_THE_BOX:    return 200;
+    case SeedType::SEED_ZOMBIE_YETI:               return 450;
     case SeedType::SEED_ZOMBIE_CATAPULT:           return 300;
-    case SeedType::SEED_ZOMBIE_SNORKEL:             return 150;
-    case SeedType::SEED_ZOMBIE_BOSS:               return 1000;
-    case SeedType::SEED_ZOMBIE_PEA_HEAD:           return 125;
-    case SeedType:: SEED_ZOMBIE_GATLING_HEAD:        return 175;
+    case SeedType::SEED_ZOMBIE_BOSS:               return 0;
+    case SeedType::SEED_ZOMBIE_PEA_HEAD:           return 75;
     case SeedType::SEED_ZOMBIE_WALLNUT_HEAD:       return 100;
     case SeedType::SEED_ZOMBIE_JALAPENO_HEAD:      return 125;
-    case SeedType:: SEED_ZOMBIE_SQUASH_HEAD: return 150;
-    case SeedType::SEED_ZOMBIE_TALLNUT_HEAD: return 200;
-    case SeedType::SEED_ZOMBIE_DOLPHIN_RIDER: return 150;
-    case SeedType::SEED_ZOMBIE_BOBSLED: return 200;
+    case SeedType::SEED_ZOMBIE_GATLING_HEAD:       return 150;
+    case SeedType::SEED_ZOMBIE_SQUASH_HEAD:        return 100;
+    case SeedType::SEED_ZOMBIE_TALLNUT_HEAD:       return 125;
     default:
     {
         if (theSeedType == SeedType::SEED_IMITATER && theImitaterType != SeedType::SEED_NONE)
