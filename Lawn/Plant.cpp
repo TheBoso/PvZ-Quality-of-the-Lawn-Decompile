@@ -4975,22 +4975,22 @@ int Plant::GetCost(SeedType theSeedType, SeedType theImitaterType)
     case SeedType::SEED_ZOMBIQUARIUM_SNORKLE:       return 100;
     case SeedType::SEED_ZOMBIQUARIUM_TROPHY:        return 1000;
         
-    case SeedType::SEED_ZOMBIE_NORMAL:              return 50;
+    case SeedType::SEED_ZOMBIE_NORMAL:              return 25;
     case SeedType::SEED_ZOMBIE_TRAFFIC_CONE:        return 75;
     case SeedType::SEED_ZOMBIE_POLEVAULTER:         return 75;
     case SeedType::SEED_ZOMBIE_PAIL:                return 125;
-    case SeedType::SEED_ZOMBIE_LADDER:              return 150;
+    case SeedType::SEED_ZOMBIE_LADDER:              return 100;
     case SeedType::SEED_ZOMBIE_DIGGER:              return 125;
-    case SeedType::SEED_ZOMBIE_BUNGEE:              return 125;
+    case SeedType::SEED_ZOMBIE_BUNGEE:              return 175;
     case SeedType::SEED_ZOMBIE_FOOTBALL:            return 175;
     case SeedType::SEED_ZOMBIE_BALLOON:             return 150;
     case SeedType::SEED_ZOMBIE_SCREEN_DOOR:         return 100;
-    case SeedType::SEED_ZOMBONI:                    return 175;
-    case SeedType::SEED_ZOMBIE_POGO:                return 200;
-    case SeedType::SEED_ZOMBIE_DANCER:              return 350;
-    case SeedType::SEED_ZOMBIE_GARGANTUAR:          return 300;
+    case SeedType::SEED_ZOMBONI:                    return 200;
+    case SeedType::SEED_ZOMBIE_POGO:                return 100;
+    case SeedType::SEED_ZOMBIE_DANCER:              return 325;
+    case SeedType::SEED_ZOMBIE_GARGANTUAR:          return 350;
     case SeedType::SEED_ZOMBIE_REDEYE_GARGANTUAR:   return 500;
-    case SeedType::SEED_ZOMBIE_IMP:                 return 25;
+    case SeedType::SEED_ZOMBIE_IMP:                 return 15;
     case SeedType::SEED_ZOMBIE_FLAG:
         {
             
@@ -5005,21 +5005,21 @@ int Plant::GetCost(SeedType theSeedType, SeedType theImitaterType)
         }
 
             case SeedType::SEED_ZOMBIE_NEWSPAPER:          return 125;
-    case SeedType::SEED_ZOMBIE_BACKUP_DANCER:      return 100;
+    case SeedType::SEED_ZOMBIE_BACKUP_DANCER:      return 75;
     case SeedType::SEED_ZOMBIE_DUCKY_TUBE:         return 75;
     case SeedType::SEED_ZOMBIE_SNORKEL:            return 150;
-    case SeedType::SEED_ZOMBIE_BOBSLED:            return 175;
-    case SeedType::SEED_ZOMBIE_DOLPHIN_RIDER:      return 225;
+    case SeedType::SEED_ZOMBIE_BOBSLED:            return 150;
+    case SeedType::SEED_ZOMBIE_DOLPHIN_RIDER:      return 175;
     case SeedType::SEED_ZOMBIE_JACK_IN_THE_BOX:    return 200;
-    case SeedType::SEED_ZOMBIE_YETI:               return 450;
+    case SeedType::SEED_ZOMBIE_YETI:               return 0;
     case SeedType::SEED_ZOMBIE_CATAPULT:           return 300;
     case SeedType::SEED_ZOMBIE_BOSS:               return 0;
-    case SeedType::SEED_ZOMBIE_PEA_HEAD:           return 75;
-    case SeedType::SEED_ZOMBIE_WALLNUT_HEAD:       return 100;
-    case SeedType::SEED_ZOMBIE_JALAPENO_HEAD:      return 125;
-    case SeedType::SEED_ZOMBIE_GATLING_HEAD:       return 150;
+    case SeedType::SEED_ZOMBIE_PEA_HEAD:           return 125;
+    case SeedType::SEED_ZOMBIE_WALLNUT_HEAD:       return 75;
+    case SeedType::SEED_ZOMBIE_JALAPENO_HEAD:      return 175;
+    case SeedType::SEED_ZOMBIE_GATLING_HEAD:       return 200;
     case SeedType::SEED_ZOMBIE_SQUASH_HEAD:        return 100;
-    case SeedType::SEED_ZOMBIE_TALLNUT_HEAD:       return 125;
+    case SeedType::SEED_ZOMBIE_TALLNUT_HEAD:       return 250;
     default:
     {
         if (theSeedType == SeedType::SEED_IMITATER && theImitaterType != SeedType::SEED_NONE)

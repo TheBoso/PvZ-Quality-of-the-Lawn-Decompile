@@ -235,6 +235,11 @@ void SeedChooserScreen::CrazyDavePickSeeds()
 		{
 			aSeedArray[aSeedType].mWeight = 1;
 		}
+
+		if (aSeedType < SEED_ZOMBIE_NORMAL)
+		{
+		aSeedArray[aSeedType].mWeight = 0;
+		}
 	}
 	if (mBoard->mZombieAllowed[ZOMBIE_BUNGEE] || mBoard->mZombieAllowed[ZOMBIE_CATAPULT])
 	{
@@ -248,6 +253,19 @@ void SeedChooserScreen::CrazyDavePickSeeds()
 	{
 		aSeedArray[SEED_TORCHWOOD].mWeight = 0;
 	}
+
+	if (mBoard->StageHasPool() == false)
+	{
+		aSeedArray[SEED_ZOMBIE_DOLPHIN_RIDER].mWeight = 0;
+		aSeedArray[SEED_ZOMBIE_SNORKEL].mWeight = 0;
+	}
+
+	//  TODO: useless zombies... Maybe we add new uses one day for mind controlled variants.
+	aSeedArray[SEED_ZOMBIE_BALLOON].mWeight = 0;
+	aSeedArray[SEED_ZOMBIE_DIGGER].mWeight = 0;
+	aSeedArray[SEED_ZOMBIE_SCREEN_DOOR].mWeight = 0;
+
+	
 
 	MTRand aLevelRNG = MTRand(mBoard->GetLevelRandSeed());
 	for (int i = 0; i < 3; i++)
